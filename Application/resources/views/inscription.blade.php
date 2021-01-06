@@ -3,13 +3,13 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="icon" sizes="144x144" href="http://localhost/PPE-3/Application/storage/app/public/CCI.png" />
-        <link rel="stylesheet" href="http://localhost/PPE-3/Application/resources/css/connexion.css">
+        <link rel="icon" sizes="144x144" href="http://localhost/PPE3/Application/storage/app/public/CCI.png" />
+        <link rel="stylesheet" href="http://localhost/PPE3/Application/resources/css/connexion.css">
         <title>Créer un compte</title>
     </head>
     <body>
         <header>
-            <img src="http://localhost/PPE-3/Application/storage/app/public/logo-cci.png" alt="Logo de la CCI" />
+            <img src="http://localhost/PPE3/Application/storage/app/public/logo-cci.png" alt="Logo de la CCI" />
             <h1>Inscription</h1>
         </header>
         {!! Form::open(['url' => 'inscription']) !!}
@@ -39,7 +39,7 @@
         </select>
         <br>
         {{ Form::submit('Créer un compte', ['class'=>'submit']) }}
-        {{ Form::button('Retour à la page de connexion', ['onclick'=>'window.location.href="http://localhost/PPE-3/Application/server.php"']) }}
+        {{ Form::button('Retour à la page de connexion', ['onclick'=>'window.location.href="http://localhost/PPE3/Application/server.php"']) }}
         {!! Form::close() !!}
     </body>
 </html>

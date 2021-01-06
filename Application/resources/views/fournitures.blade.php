@@ -3,8 +3,8 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" sizes="144x144" href="http://localhost/PPE-3/Application/storage/app/public/CCI.png" />
-        <link rel="stylesheet" href="http://localhost/PPE-3/Application/resources/css/fournitures.css" />
+        <link rel="icon" sizes="144x144" href="http://localhost/PPE3/Application/storage/app/public/CCI.png" />
+        <link rel="stylesheet" href="http://localhost/PPE3/Application/resources/css/fournitures.css" />
         <title>Fournitures</title>
         <script type="text/javascript">
             function selectionFamilles() {
@@ -28,7 +28,7 @@
     <body>
         <nav>
             <ul>
-                <li id="li_logo"><img id="logo" src="http://localhost/PPE-3/Application/storage/app/public/logo-cci.png" alt="Logo de la CCI" /></li>
+                <li id="li_logo"><img id="logo" src="http://localhost/PPE3/Application/storage/app/public/logo-cci.png" alt="Logo de la CCI" /></li>
                 <?php if ($_SESSION['categorie'] != 'Administrateur') { ?>
                     <li><a class="menu" href="accueil">ACCUEIL</a></li>
                 <?php } else { ?>
@@ -59,7 +59,7 @@
             <h1>Fournitures</h1>
             {!! Form::open(['url' => 'rechercher']) !!}
             {{ Form::search('recherche', $value = null, ['id'=>'recherche', 'placeholder'=>'Recherche', 'required']) }}
-            {{ Form::image('http://localhost/PPE-3/Application/storage/app/public/icon-search.png', 'envoyer', ['id'=>'envoyer', 'alt'=>'Icone de loupe']) }}
+            {{ Form::image('http://localhost/PPE3/Application/storage/app/public/icon-search.png', 'envoyer', ['id'=>'envoyer', 'alt'=>'Icone de loupe']) }}
             {!! Form::close() !!}
             <div id="nom_deconnexion">
                 <p id="nom_prenom">{{ $_SESSION['prenom'] }} {{ $_SESSION['nom'] }}</p>
@@ -103,7 +103,7 @@
                         </tr>
                     <?php for ($g=0; $g < $_SESSION['recherche']->count(); $g++) { ?>
                         <tr>
-                            <td><img class="photo_fournitures" src="http://localhost/PPE-3/Application/storage/app/public/{{ $_SESSION['recherche'][$g]->nomPhoto }}.jpg" /></td>
+                            <td><img class="photo_fournitures" src="http://localhost/PPE3/Application/storage/app/public/{{ $_SESSION['recherche'][$g]->nomPhoto }}.jpg" /></td>
                             <td>{{ $_SESSION['recherche'][$g]->nomFournitures }}</td>
                             <td>{{ $_SESSION['recherche'][$g]->descriptionFournitures }}</td>
                             <td>
@@ -155,29 +155,29 @@
             } else {
                 $valide = $valider ?? false;
                 if ($valide) { ?>
-                    <p class="confirm"><img class="img_confirm" src="http://localhost/PPE-3/Application/storage/app/public/confirm.png" alt="Icon de confirmation" /> La mise à jour à bien été prise en compte</p><br />
+                    <p class="confirm"><img class="img_confirm" src="http://localhost/PPE3/Application/storage/app/public/confirm.png" alt="Icon de confirmation" /> La mise à jour à bien été prise en compte</p><br />
                     <?php header('Refresh: 5; url=fournitures');
                 }
 
                 $fichiertropgros = $tropgros ?? false;
                 if ($fichiertropgros) { ?>
-                    <p class="erreur"><img class="img_erreur" src="http://localhost/PPE-3/Application/storage/app/public/warning.png" alt="Icon de confirmation" /> Le poids de l'image est trop volumineux ! (Max : 500ko)</p><br />
+                    <p class="erreur"><img class="img_erreur" src="http://localhost/PPE3/Application/storage/app/public/warning.png" alt="Icon de confirmation" /> Le poids de l'image est trop volumineux ! (Max : 500ko)</p><br />
                 <?php }
 
                 $formatinvalide = $invalide ?? false;
                 if ($formatinvalide) { ?>
-                    <p class="erreur"><img class="img_erreur" src="http://localhost/PPE-3/Application/storage/app/public/warning.png" alt="Icon de confirmation" /> Le format de l'image n'est pas valide !</p><br />
+                    <p class="erreur"><img class="img_erreur" src="http://localhost/PPE3/Application/storage/app/public/warning.png" alt="Icon de confirmation" /> Le format de l'image n'est pas valide !</p><br />
                 <?php }
 
                 $creation = $cree ?? false;
                 if ($creation) { ?>
-                    <p class="confirm"><img class="img_confirm" src="http://localhost/PPE-3/Application/storage/app/public/confirm.png" alt="Icon de confirmation" /> L'article a bien été créé</p><br />
+                    <p class="confirm"><img class="img_confirm" src="http://localhost/PPE3/Application/storage/app/public/confirm.png" alt="Icon de confirmation" /> L'article a bien été créé</p><br />
                     <?php header('Refresh: 5; url=fournitures');
                 }
 
                 $creation_commande = $commande_cree ?? false;
                 if ($creation_commande) { ?>
-                    <p class="confirm"><img class="img_confirm" src="http://localhost/PPE-3/Application/storage/app/public/confirm.png" alt="Icon de confirmation" /> La commande a bien été prise en compte</p><br />
+                    <p class="confirm"><img class="img_confirm" src="http://localhost/PPE3/Application/storage/app/public/confirm.png" alt="Icon de confirmation" /> La commande a bien été prise en compte</p><br />
                     <?php header('Refresh: 5; url=fournitures');
                 }
 
@@ -250,7 +250,7 @@
                         </tr>
                     <?php for ($l=0; $l < $_SESSION["$nomFamille"]->count(); $l++) { ?>
                         <tr>
-                            <td><img class="photo_fournitures" src='http://localhost/PPE-3/Application/storage/app/public/{{ $_SESSION["$nomFamille"][$l]->nomPhoto }}.jpg' /></td>
+                            <td><img class="photo_fournitures" src='http://localhost/PPE3/Application/storage/app/public/{{ $_SESSION["$nomFamille"][$l]->nomPhoto }}.jpg' /></td>
                             <td>{{ $_SESSION["$nomFamille"][$l]->nomFournitures }}</td>
                             <td>{{ $_SESSION["$nomFamille"][$l]->descriptionFournitures }}</td>
                             <td>

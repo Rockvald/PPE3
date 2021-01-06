@@ -3,8 +3,8 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" sizes="144x144" href="http://localhost/PPE-3/Application/storage/app/public/CCI.png" />
-        <link rel="stylesheet" href="http://localhost/PPE-3/Application/resources/css/demandesspecifiques.css" />
+        <link rel="icon" sizes="144x144" href="http://localhost/PPE3/Application/storage/app/public/CCI.png" />
+        <link rel="stylesheet" href="http://localhost/PPE3/Application/resources/css/demandesspecifiques.css" />
         <title>Demandes spécifiques</title>
         <script type="text/javascript">
             function imprimer(nomSection) {
@@ -36,7 +36,7 @@
     <body>
         <nav>
             <ul>
-                <li id="li_logo"><img id="logo" src="http://localhost/PPE-3/Application/storage/app/public/logo-cci.png" alt="Logo de la CCI" /></li>
+                <li id="li_logo"><img id="logo" src="http://localhost/PPE3/Application/storage/app/public/logo-cci.png" alt="Logo de la CCI" /></li>
                 <?php if ($_SESSION['categorie'] != 'Administrateur') { ?>
                     <li><a class="menu" href="accueil">ACCUEIL</a></li>
                 <?php } else { ?>
@@ -67,7 +67,7 @@
             <h1>Demandes spécifiques</h1>
             {!! Form::open(['url' => 'rechercher']) !!}
             {{ Form::search('recherche', $value = null, ['id'=>'recherche', 'placeholder'=>'Recherche', 'required']) }}
-            {{ Form::image('http://localhost/PPE-3/Application/storage/app/public/icon-search.png', 'envoyer', ['id'=>'envoyer', 'alt'=>'Icone de loupe']) }}
+            {{ Form::image('http://localhost/PPE3/Application/storage/app/public/icon-search.png', 'envoyer', ['id'=>'envoyer', 'alt'=>'Icone de loupe']) }}
             {!! Form::close() !!}
             <div id="nom_deconnexion">
                 <p id="nom_prenom">{{ $_SESSION['prenom'] }} {{ $_SESSION['nom'] }}</p>
@@ -100,13 +100,13 @@
             <?php if ($_SESSION['categorie'] != 'Administrateur') {
                 $confirm = $vrai ?? false;
                 if ($confirm) { ?>
-                    <p class="confirm"><img class="img_confirm" src="http://localhost/PPE-3/Application/storage/app/public/confirm.png" alt="Icon de confirmation" /> Votre demande a bien été envoyée</p><br />
+                    <p class="confirm"><img class="img_confirm" src="http://localhost/PPE3/Application/storage/app/public/confirm.png" alt="Icon de confirmation" /> Votre demande a bien été envoyée</p><br />
                 <?php header('Refresh: 5; url=demandesspecifiques');
                 }
 
                 $envoye = $envoyer ?? false;
                 if ($envoye) { ?>
-                    <p class="confirm"><img class="img_confirm" src="http://localhost/PPE-3/Application/storage/app/public/confirm.png" alt="Icon de confirmation" /> La demande à bien été mise à jour</p><br />
+                    <p class="confirm"><img class="img_confirm" src="http://localhost/PPE3/Application/storage/app/public/confirm.png" alt="Icon de confirmation" /> La demande à bien été mise à jour</p><br />
                     <?php header('Refresh: 5; url=demandesspecifiques');
                 } ?>
 
@@ -237,7 +237,7 @@
 
                     $envoye = $envoyer ?? false;
                     if ($envoye) { ?>
-                        <p id="confirm"><img class="img_confirm" src="http://localhost/PPE-3/Application/storage/app/public/confirm.png" alt="Icon de confirmation" /> La demande à bien été mise à jour</p><br />
+                        <p id="confirm"><img class="img_confirm" src="http://localhost/PPE3/Application/storage/app/public/confirm.png" alt="Icon de confirmation" /> La demande à bien été mise à jour</p><br />
                         <?php header('Refresh: 5; url=demandesspecifiques');
                     }
 

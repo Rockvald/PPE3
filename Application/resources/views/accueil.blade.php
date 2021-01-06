@@ -1,6 +1,6 @@
 <?php
     if (!isset($_SESSION['mail'])) {
-        header('Refresh: 0; url=http://localhost/PPE-3/Application/server.php');
+        header('Refresh: 0; url=http://localhost/PPE3/Application/server.php');
         exit;
     }
 ?>
@@ -9,8 +9,8 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" sizes="144x144" href="http://localhost/PPE-3/Application/storage/app/public/CCI.png" />
-        <link rel="stylesheet" href="http://localhost/PPE-3/Application/resources/css/accueil.css" />
+        <link rel="icon" sizes="144x144" href="http://localhost/PPE3/Application/storage/app/public/CCI.png" />
+        <link rel="stylesheet" href="http://localhost/PPE3/Application/resources/css/accueil.css" />
         <title>Accueil</title>
         <script type="text/javascript">
             function afficherMenu(menu) {
@@ -25,7 +25,7 @@
     <body>
         <nav>
             <ul>
-                <li id="li_logo"><img id="logo" src="http://localhost/PPE-3/Application/storage/app/public/logo-cci.png" alt="Logo de la CCI" /></li>
+                <li id="li_logo"><img id="logo" src="http://localhost/PPE3/Application/storage/app/public/logo-cci.png" alt="Logo de la CCI" /></li>
                 <?php if ($_SESSION['categorie'] != 'Administrateur') { ?>
                     <li><a class="menu" href="accueil">ACCUEIL</a></li>
                 <?php } else { ?>
@@ -58,7 +58,7 @@
             <h1>Accueil</h1>
             {!! Form::open(['url' => 'rechercher']) !!}
             {{ Form::search('recherche', $value = null, ['id'=>'recherche', 'placeholder'=>'Recherche', 'required']) }}
-            {{ Form::image('http://localhost/PPE-3/Application/storage/app/public/icon-search.png', 'envoyer', ['id'=>'envoyer', 'alt'=>'Icone de loupe']) }}
+            {{ Form::image('http://localhost/PPE3/Application/storage/app/public/icon-search.png', 'envoyer', ['id'=>'envoyer', 'alt'=>'Icone de loupe']) }}
             {!! Form::close() !!}
             <div id="nom_deconnexion">
                 <p id="nom_prenom">{{ $_SESSION['prenom'] }} {{ $_SESSION['nom'] }}</p>
@@ -95,7 +95,7 @@
                 if ($_SESSION['categorie'] != 'Administrateur') {
                     $droitinsuffisant = $droitinsuf ?? false;
                     if ($droitinsuffisant) { ?>
-                        <p class="erreur"><img class="img_erreur" src="http://localhost/PPE-3/Application/storage/app/public/warning.png" alt="Icon de confirmation" /> Vous n'avez pas les droits pour accéder à cette page !</p><br />
+                        <p class="erreur"><img class="img_erreur" src="http://localhost/PPE3/Application/storage/app/public/warning.png" alt="Icon de confirmation" /> Vous n'avez pas les droits pour accéder à cette page !</p><br />
                         <?php header('Refresh: 5; url=accueil');
                     }
 
@@ -114,7 +114,7 @@
                         </tr>
                     <?php for ($i=0; $i < 6; $i++) { ?>
                         <tr>
-                            <td><img class="photo_fournitures" src="http://localhost/PPE-3/Application/storage/app/public/{{ $_SESSION['fournitures'][$i]->nomPhoto }}.jpg" /></td>
+                            <td><img class="photo_fournitures" src="http://localhost/PPE3/Application/storage/app/public/{{ $_SESSION['fournitures'][$i]->nomPhoto }}.jpg" /></td>
                             <td>{{ $_SESSION['fournitures'][$i]->nomFournitures }}</td>
                             <td>{{ $_SESSION['fournitures'][$i]->descriptionFournitures }}</td>
                             <td>{{ $_SESSION['fournitures'][$i]->quantiteDisponible }}</td>
@@ -133,43 +133,43 @@
             <?php } else {
                 $fichiertropgros = $tropgros ?? false;
                 if ($fichiertropgros) { ?>
-                    <p class="erreur"><img class="img_erreur" src="http://localhost/PPE-3/Application/storage/app/public/warning.png" alt="Icon de confirmation" /> Le poids du logo est trop volumineux ! (Max : 500Mo)</p><br />
+                    <p class="erreur"><img class="img_erreur" src="http://localhost/PPE3/Application/storage/app/public/warning.png" alt="Icon de confirmation" /> Le poids du logo est trop volumineux ! (Max : 500Mo)</p><br />
                     <?php header('Refresh: 5; url=accueil');
                 }
 
                 $formatinvalide = $invalide ?? false;
                 if ($formatinvalide) { ?>
-                    <p class="erreur"><img class="img_erreur" src="http://localhost/PPE-3/Application/storage/app/public/warning.png" alt="Icon de confirmation" /> Le format du logo n'est pas valide !</p><br />
+                    <p class="erreur"><img class="img_erreur" src="http://localhost/PPE3/Application/storage/app/public/warning.png" alt="Icon de confirmation" /> Le format du logo n'est pas valide !</p><br />
                     <?php header('Refresh: 5; url=accueil');
                 }
 
                 $modifie = $modif ?? false;
                 if ($modifie) { ?>
-                    <p class="confirm"><img class="img_confirm" src="http://localhost/PPE-3/Application/storage/app/public/confirm.png" alt="Icon de confirmation" /> Le logo a bien été modifier</p><br />
+                    <p class="confirm"><img class="img_confirm" src="http://localhost/PPE3/Application/storage/app/public/confirm.png" alt="Icon de confirmation" /> Le logo a bien été modifier</p><br />
                     <?php header('Refresh: 5; url=accueil');
                 }
 
                 $confirmSupprlogo = $supprlogo ?? false;
                 if ($confirmSupprlogo) { ?>
-                    <p class="confirm"><img class="img_confirm" src="http://localhost/PPE-3/Application/storage/app/public/confirm.png" alt="Icon de confirmation" /> Le logo a bien été supprimé</p><br />
+                    <p class="confirm"><img class="img_confirm" src="http://localhost/PPE3/Application/storage/app/public/confirm.png" alt="Icon de confirmation" /> Le logo a bien été supprimé</p><br />
                 <?php header('Refresh: 5; url=accueil');
                 }
 
                 $confirm = $vrai ?? false;
                 if ($confirm) { ?>
-                    <p class="confirm"><img class="img_confirm" src="http://localhost/PPE-3/Application/storage/app/public/confirm.png" alt="Icon de confirmation" /> Votre message a bien été envoyé</p><br />
+                    <p class="confirm"><img class="img_confirm" src="http://localhost/PPE3/Application/storage/app/public/confirm.png" alt="Icon de confirmation" /> Votre message a bien été envoyé</p><br />
                 <?php header('Refresh: 5; url=accueil');
                 }
 
                 $confirmSuppr = $suppr ?? false;
                 if ($confirmSuppr) { ?>
-                    <p class="confirm"><img class="img_confirm" src="http://localhost/PPE-3/Application/storage/app/public/confirm.png" alt="Icon de confirmation" /> Le message a bien été supprimé</p><br />
+                    <p class="confirm"><img class="img_confirm" src="http://localhost/PPE3/Application/storage/app/public/confirm.png" alt="Icon de confirmation" /> Le message a bien été supprimé</p><br />
                 <?php header('Refresh: 5; url=accueil');
                 }
 
                 $confirmSupprTous = $supprtous ?? false;
                 if ($confirmSupprTous) { ?>
-                    <p class="confirm"><img class="img_confirm" src="http://localhost/PPE-3/Application/storage/app/public/confirm.png" alt="Icon de confirmation" /> Les messages ont bien été supprimé</p><br />
+                    <p class="confirm"><img class="img_confirm" src="http://localhost/PPE3/Application/storage/app/public/confirm.png" alt="Icon de confirmation" /> Les messages ont bien été supprimé</p><br />
                 <?php header('Refresh: 5; url=accueil');
                 }
 
@@ -177,7 +177,7 @@
                     <section id="message">{{ $_SESSION["message"] }}</section>
                 <?php } ?>
 
-                <a href="accueil" id="haut_page"><img id="img_haut_page" src="http://localhost/PPE-3/Application/storage/app/public/haut-page.png" alt="Flèche" /></a>
+                <a href="accueil" id="haut_page"><img id="img_haut_page" src="http://localhost/PPE3/Application/storage/app/public/haut-page.png" alt="Flèche" /></a>
 
                 <h4>Modification du logo :</h4>
                 {!! Form::open(['url' => 'modificationlogo', 'files' => true, 'id'=>'modificationlogo']) !!}

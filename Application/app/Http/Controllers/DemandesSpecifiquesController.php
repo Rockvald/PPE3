@@ -14,7 +14,7 @@ class DemandesSpecifiquesController extends Controller
         session_start();
 
         if (!isset($_SESSION['mail'])) {
-            header('Refresh: 0; url=http://localhost/PPE-3/Application/server.php?page=demandesspecifiques');
+            header('Refresh: 0; url=http://localhost/PPE3/Application/server.php?page=demandesspecifiques');
             exit;
         }
 

@@ -64,7 +64,7 @@ class PersonnelController extends Controller
         elseif (!password_verify($request->mdp, $Personnel[0]->pass))
         {
             $erreur = 'mdp';
-            return view('connexion', ['erreur'=>$erreur]);
+            return view('connexion', ['erreur'=>$erreur, 'mail'=>$request->email]);
         }
         elseif ($request->email == $Personnel[0]->mail AND password_verify($request->mdp, $Personnel[0]->pass))
         {
@@ -234,7 +234,7 @@ class PersonnelController extends Controller
                 break;
         }
 
-        $nomChemin = '/var/www/html/PPE-3/Application/storage/app/public/logo-cci.png';
+        $nomChemin = '/var/www/html/PPE3/Application/storage/app/public/logo-cci.png';
 
         imagepng($photo, $nomChemin);
 
@@ -247,7 +247,7 @@ class PersonnelController extends Controller
     {
         session_start();
 
-        unlink('/var/www/html/PPE-3/Application/storage/app/public/logo-cci.png');
+        unlink('/var/www/html/PPE3/Application/storage/app/public/logo-cci.png');
 
         $supprlogo = true;
 
@@ -259,7 +259,7 @@ class PersonnelController extends Controller
         session_start();
 
         if (!isset($_SESSION['mail'])) {
-            header('Refresh: 0; url=http://localhost/PPE-3/Application/server.php?page=messagerie');
+            header('Refresh: 0; url=http://localhost/PPE3/Application/server.php?page=messagerie');
             exit;
         }
 
@@ -276,7 +276,7 @@ class PersonnelController extends Controller
         session_start();
 
         if (!isset($_SESSION['mail'])) {
-            header('Refresh: 0; url=http://localhost/PPE-3/Application/server.php?page=statistique');
+            header('Refresh: 0; url=http://localhost/PPE3/Application/server.php?page=statistique');
             exit;
         }
 
@@ -293,7 +293,7 @@ class PersonnelController extends Controller
         session_start();
 
         if (!isset($_SESSION['mail'])) {
-            header('Refresh: 0; url=http://localhost/PPE-3/Application/server.php?page=personnalisationducompte');
+            header('Refresh: 0; url=http://localhost/PPE3/Application/server.php?page=personnalisationducompte');
             exit;
         }
 

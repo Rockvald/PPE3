@@ -13,7 +13,7 @@ class FournituresController extends Controller
         session_start();
 
         if (!isset($_SESSION['mail'])) {
-            header('Refresh: 0; url=http://localhost/PPE-3/Application/server.php?page=fournitures');
+            header('Refresh: 0; url=http://localhost/PPE3/Application/server.php?page=fournitures');
             exit;
         }
 
@@ -100,7 +100,7 @@ class FournituresController extends Controller
                 break;
         }
 
-        $nomChemin = '/var/www/html/PPE-3/Application/storage/app/public/'.$nomPhoto.'.jpg';
+        $nomChemin = '/var/www/html/PPE3/Application/storage/app/public/'.$nomPhoto.'.jpg';
 
         imagejpeg($photo, $nomChemin);
 

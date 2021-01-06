@@ -3,8 +3,8 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" sizes="144x144" href="http://localhost/PPE-3/Application/storage/app/public/CCI.png" />
-        <link rel="stylesheet" href="http://localhost/PPE-3/Application/resources/css/famillesfournitures.css" />
+        <link rel="icon" sizes="144x144" href="http://localhost/PPE3/Application/storage/app/public/CCI.png" />
+        <link rel="stylesheet" href="http://localhost/PPE3/Application/resources/css/famillesfournitures.css" />
         <title>Familles Fournitures</title>
         <script type="text/javascript">
             function afficherMenu(menu) {
@@ -19,7 +19,7 @@
     <body>
         <nav>
             <ul>
-                <li id="li_logo"><img id="logo" src="http://localhost/PPE-3/Application/storage/app/public/logo-cci.png" alt="Logo de la CCI" /></li>
+                <li id="li_logo"><img id="logo" src="http://localhost/PPE3/Application/storage/app/public/logo-cci.png" alt="Logo de la CCI" /></li>
                 <?php if ($_SESSION['categorie'] != 'Administrateur') { ?>
                     <li><a class="menu" href="accueil">ACCUEIL</a></li>
                 <?php } else { ?>
@@ -50,7 +50,7 @@
             <h1>Familles Fournitures</h1>
             {!! Form::open(['url' => 'rechercher']) !!}
             {{ Form::search('recherche', $value = null, ['id'=>'recherche', 'placeholder'=>'Recherche', 'required']) }}
-            {{ Form::image('http://localhost/PPE-3/Application/storage/app/public/icon-search.png', 'envoyer', ['id'=>'envoyer', 'alt'=>'Icone de loupe']) }}
+            {{ Form::image('http://localhost/PPE3/Application/storage/app/public/icon-search.png', 'envoyer', ['id'=>'envoyer', 'alt'=>'Icone de loupe']) }}
             {!! Form::close() !!}
             <div id="nom_deconnexion">
                 <p id="nom_prenom">{{ $_SESSION['prenom'] }} {{ $_SESSION['nom'] }}</p>
@@ -79,7 +79,7 @@
         <section id="corps">
             <?php $creation = $cree ?? false;
             if ($creation) { ?>
-                <p class="confirm"><img class="img_confirm" src="http://localhost/PPE-3/Application/storage/app/public/confirm.png" alt="Icon de confirmation" /> La famille a bien été créé</p><br />
+                <p class="confirm"><img class="img_confirm" src="http://localhost/PPE3/Application/storage/app/public/confirm.png" alt="Icon de confirmation" /> La famille a bien été créé</p><br />
                 <?php header('Refresh: 5; url=famillesfournitures');
             } ?>
             <table id="ajout_famille">
