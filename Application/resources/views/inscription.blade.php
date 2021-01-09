@@ -1,18 +1,11 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="icon" sizes="144x144" href="http://localhost/PPE3/Application/storage/app/public/CCI.png" />
-        <link rel="stylesheet" href="http://localhost/PPE3/Application/resources/css/connexion.css">
-        <title>Créer un compte</title>
-    </head>
-    <body>
+@php $css = 'connexion'; $title_h1 = "Inscription"; @endphp
+@include('head')
         <header>
-            <img src="http://localhost/PPE3/Application/storage/app/public/logo-cci.png" alt="Logo de la CCI" />
+            <img src="{{ asset('storage/app/public/logo-cci.png') }}" alt="Logo de la CCI" />
             <h1>Inscription</h1>
         </header>
         {!! Form::open(['url' => 'inscription']) !!}
+        {{ Form::hidden('page', 'accueil') }}
         {{ Form::label('nom', 'Nom') }}
         {{ Form::text('nom', $value = null, ['maxlength'=>'50', 'required']) }}
         <br>
@@ -33,13 +26,13 @@
         <br>
         {{ Form::label('service', 'Service') }}
         <select name="service">
-            <?php for ($i=0; $i < $Services->count(); $i++) { ?>
-                <option value="{{ $Services[$i]->id }}">{{ $Services[$i]->nomService }}</option>
-            <?php } ?>
+            @foreach ($Services as $lignes => $service)
+                <option value="{{ $service->id }}">{{ $service->nomService }}</option>
+            @endforeach
         </select>
         <br>
         {{ Form::submit('Créer un compte', ['class'=>'submit']) }}
-        {{ Form::button('Retour à la page de connexion', ['onclick'=>'window.location.href="http://localhost/PPE3/Application/server.php"']) }}
+        {{ Form::button('Retour à la page de connexion', ['onclick'=>'window.location.href="'.url('/').'"']) }}
         {!! Form::close() !!}
     </body>
 </html>

@@ -31,7 +31,7 @@ class DemandesSpecifiquesController extends Controller
             $dateCommande = date_create(date('Y-m-d', strtotime($demande_fini[$i]->updated_at)));
             $diff = date_diff($dateActuel, $dateCommande);
             if ($diff->format('%a') > 14) {
-                $commande_suppr = DemandesSpecifiques::where('id', $demande_fini[$i]->id)->delete();
+                //$commande_suppr = DemandesSpecifiques::where('id', $demande_fini[$i]->id)->delete();
 
                 $demande_fini = DemandesSpecifiques::join('etats', 'demandes_specifiques.idEtat', 'etats.id')->join('personnels', 'demandes_specifiques.idPersonnel', 'personnels.id')->select('demandes_specifiques.*', 'nomEtat', 'mail')->where('mail', $_SESSION['mail'])->where('etats.nomEtat', 'Livré')->orWhere('etats.nomEtat', 'Annulé')->orderby('demandes_specifiques.id', 'asc')->get();
             }

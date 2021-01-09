@@ -1,114 +1,23 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" />
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" sizes="144x144" href="http://localhost/PPE3/Application/storage/app/public/CCI.png" />
-        <link rel="stylesheet" href="http://localhost/PPE3/Application/resources/css/demandesspecifiques.css" />
-        <title>Demandes spécifiques</title>
-        <script type="text/javascript">
-            function imprimer(nomSection) {
-                var contenuAImprimer = document.getElementById(nomSection).innerHTML;
-                var contenuOriginel = document.body.innerHTML;
-                document.body.innerHTML = contenuAImprimer;
-                window.print();
-                document.body.innerHTML = contenuOriginel;
-            }
-
-            function selectionServices() {
-                var service = document.getElementById("select_services").value;
-                if (service == 'Tous') {
-                    window.location.href = 'demandesspecifiques';
-                } else {
-                    window.location.href = 'demandesspecifiques?service=' + service ;
-                }
-            }
-
-            function afficherMenu(menu) {
-                menu.style.visibility = "visible";
-            }
-
-            function cacherMenu(menu) {
-                menu.style.visibility = "hidden";
-            }
-        </script>
-    </head>
-    <body>
-        <nav>
-            <ul>
-                <li id="li_logo"><img id="logo" src="http://localhost/PPE3/Application/storage/app/public/logo-cci.png" alt="Logo de la CCI" /></li>
-                <?php if ($_SESSION['categorie'] != 'Administrateur') { ?>
-                    <li><a class="menu" href="accueil">ACCUEIL</a></li>
-                <?php } else { ?>
-                    <li><a class="menu" href="accueil" onmouseover="afficherMenu(menu_lateral)" onmouseout="cacherMenu(menu_lateral)">ACCUEIL</a></li>
-                <?php } ?>
-                <li><a class="menu" href="departements">DÉPARTEMENTS</a></li>
-                <li><a class="menu" href="fournitures">FOURNITURES</a></li>
-                <?php if ($_SESSION['categorie'] == 'Administrateur') { ?>
-                    <li><a class="menu" href="famillesfournitures">FAMILLES FOURNITURES</a></li>
-                    <li><a class="menu" href="messagerie">MÉSSAGERIE</a></li>
-                    <li><a class="menu" href="statistique">STATISTIQUE</a></li>
-                <?php } ?>
-                <li><a class="menu" href="demandesspecifiques">DEMANDE SPÉCIFIQUE</a></li>
-                <li><a class="menu" href="suivi">SUIVI</a></li>
-                <?php if ($_SESSION['categorie'] != 'Administrateur') { ?>
-                    <li><a class="menu" id="personnalisation" href="personnalisationducompte">PERSONNALISATION DU COMPTE</a></li>
-                <?php } ?>
-            </ul>
-        </nav>
-        <nav id="menu_lateral"  onmouseover="afficherMenu(menu_lateral)" onmouseout="cacherMenu(menu_lateral)">
-            <ul id="ul_menu_lateral">
-                <li class="li_menu_lateral"><a class="menu_lateral" href="accueil#navlistecomptes">Liste des comptes</a></li>
-                <li class="li_menu_lateral"><a class="menu_lateral" href="accueil#supprimer_tous">Supprimer tous les messages</a></li>
-                <li class="li_menu_lateral"><a class="menu_lateral" href="accueil#liste_commandes">Liste des commandes en cours</a></li>
-            </ul>
-        </nav>
-        <header>
-            <h1>Demandes spécifiques</h1>
-            {!! Form::open(['url' => 'rechercher']) !!}
-            {{ Form::search('recherche', $value = null, ['id'=>'recherche', 'placeholder'=>'Recherche', 'required']) }}
-            {{ Form::image('http://localhost/PPE3/Application/storage/app/public/icon-search.png', 'envoyer', ['id'=>'envoyer', 'alt'=>'Icone de loupe']) }}
-            {!! Form::close() !!}
-            <div id="nom_deconnexion">
-                <p id="nom_prenom">{{ $_SESSION['prenom'] }} {{ $_SESSION['nom'] }}</p>
-                <button type="button" name="deconnexion" id="deconnexion" onclick="window.location.href='deconnexion'">Se déconnecter</button>
-            </div>
-            <?php if (isset($_SESSION['commandes'][0])) { ?>
-                <table id="commandes_cours">
-                    <caption>Commandes en cours</caption>
-                    <tr>
-                        <th class="tabl_comm">Nom</th>
-                        <th class="tabl_comm">Quantitée demandée</th>
-                        <th class="tabl_comm">État</th>
-                        <th class="tabl_comm">Dernière mise à jour</th>
-                    </tr>
-                <?php for ($g=0; $g < $_SESSION['commandes']->count(); $g++) { ?>
-                    <tr>
-                        <td class="tabl_comm">{{ $_SESSION['commandes'][$g]->nomCommandes }}</td>
-                        <td class="tabl_comm">{{ $_SESSION['commandes'][$g]->quantiteDemande }}</td>
-                        <td class="tabl_comm">{{ $_SESSION['commandes'][$g]->nomEtat }}</td>
-                        <td class="tabl_comm">{{ date('G:i:s \l\e d-m-Y', strtotime($_SESSION['commandes'][$g]->updated_at)) }}</td>
-                    </tr>
-                <?php } ?>
-                </table>
-            <?php } ?>
-        </header>
-        <?php if ($_SESSION['categorie'] == 'Administrateur') { ?>
+@php $css = 'demandesspecifiques'; $title_h1 = "Demandes spécifiques"; @endphp
+@include('head')
+@include('menus')
+@include('header')
+        @if ($_SESSION['categorie'] == 'Administrateur')
             <div id="bouton_imprimer"><button onclick="imprimer('corps');">Imprimer</button></div>
-        <?php } ?>
+        @endif
         <section id="corps">
-            <?php if ($_SESSION['categorie'] != 'Administrateur') {
-                $confirm = $vrai ?? false;
-                if ($confirm) { ?>
-                    <p class="confirm"><img class="img_confirm" src="http://localhost/PPE3/Application/storage/app/public/confirm.png" alt="Icon de confirmation" /> Votre demande a bien été envoyée</p><br />
-                <?php header('Refresh: 5; url=demandesspecifiques');
-                }
+            @if ($_SESSION['categorie'] != 'Administrateur')
+                @php ($confirm = $vrai ?? false)
+                @if ($confirm)
+                    <p class="confirm"><img class="img_confirm" src="{{ asset('storage/app/public/confirm.png') }}" alt="Icon de confirmation" /> Votre demande a bien été envoyée</p><br />
+                    @php (header('Refresh: 5; url=demandesspecifiques'))
+                @endif
 
-                $envoye = $envoyer ?? false;
-                if ($envoye) { ?>
-                    <p class="confirm"><img class="img_confirm" src="http://localhost/PPE3/Application/storage/app/public/confirm.png" alt="Icon de confirmation" /> La demande à bien été mise à jour</p><br />
-                    <?php header('Refresh: 5; url=demandesspecifiques');
-                } ?>
+                @php ($envoye = $envoyer ?? false)
+                @if ($envoye)
+                    <p class="confirm"><img class="img_confirm" src="{{ asset('storage/app/public/confirm.png') }}" alt="Icon de confirmation" /> La demande à bien été mise à jour</p><br />
+                    @php (header('Refresh: 5; url=demandesspecifiques'))
+                @endif
 
                 <h4>Effectuer une demande spécifique :</h4><br />
                 {!! Form::open(['url' => 'creationdemande']) !!}
@@ -121,8 +30,8 @@
                 {{ Form::submit('Envoyer la demande') }}
                 {!! Form::close() !!}
 
-                <?php if ($_SESSION['categorie'] == 'Valideur') {
-                    if (isset($_SESSION['demandes_valid'][0])) { ?>
+                @if ($_SESSION['categorie'] == 'Valideur')
+                    @if (isset($_SESSION['demandes_valid'][0]))
                         <table id="tab_ut">
                             <caption class="titre_demande">Liste des demandes des utilisateurs</caption>
                             <tr>
@@ -135,50 +44,50 @@
                                 <th>Création</th>
                                 <th>Dernière mise à jour</th>
                                 <th>
-                                <?php for ($h=0; $h < $_SESSION['demandes_valid']->count(); $h++) {
-                                    if (($_SESSION["demandes_valid"][$h]->nomEtat == 'Prise en compte') AND !isset($afficher)) {
-                                        echo 'Modifier l\'état';
-                                        $afficher = true;
-                                    }
-                                } ?>
+                                @foreach ($_SESSION['demandes_valid'] as $lignes => $demandes_valid)
+                                    @if (($demandes_valid->nomEtat == 'Prise en compte') AND !isset($afficher))
+                                        {{ 'Modifier l\'état' }}
+                                        @php ($afficher = true)
+                                    @endif
+                                @endforeach
                                 </th>
                             </tr>
-                            <?php for ($i=0; $i < $_SESSION['demandes_valid']->count(); $i++) { ?>
+                            @foreach ($_SESSION['demandes_valid'] as $lignes => $demandes_valid)
                                 <tr>
-                                    <td>{{ $_SESSION['demandes_valid'][$i]->nom }}</td>
-                                    <td>{{ $_SESSION['demandes_valid'][$i]->prenom }}</td>
-                                    <td>{{ $_SESSION['demandes_valid'][$i]->nomDemande }}</td>
-                                    <td>{{ $_SESSION['demandes_valid'][$i]->quantiteDemande }}</td>
+                                    <td>{{ $demandes_valid->nom }}</td>
+                                    <td>{{ $demandes_valid->prenom }}</td>
+                                    <td>{{ $demandes_valid->nomDemande }}</td>
+                                    <td>{{ $demandes_valid->quantiteDemande }}</td>
                                     <td class="lien_produit">
-                                        <?php if ($_SESSION['demandes_valid'][$i]->lienProduit != 'Aucun lien fourni') { ?>
-                                            <a href="{{ $_SESSION['demandes_valid'][$i]->lienProduit }}" target="_blank">{{ $_SESSION['demandes_valid'][$i]->lienProduit }}</a>
-                                        <?php } else {
-                                            echo $_SESSION['demandes_valid'][$i]->lienProduit;
-                                        } ?>
+                                        @if ($demandes_valid->lienProduit != 'Aucun lien fourni')
+                                            <a href="{{ $demandes_valid->lienProduit }}" target="_blank">{{ $demandes_valid->lienProduit }}</a>
+                                        @else
+                                            {{ $demandes_valid->lienProduit }}
+                                        @endif
                                     </td>
-                                    <td>{{ $_SESSION["demandes_valid"][$i]->nomEtat }}</td>
-                                    <td>{{ date('G:i:s \l\e d-m-Y', strtotime($_SESSION['demandes_valid'][$i]->created_at)) }}</td>
-                                    <td>{{ date('G:i:s \l\e d-m-Y', strtotime($_SESSION['demandes_valid'][$i]->updated_at)) }}</td>
+                                    <td>{{ $demandes_valid->nomEtat }}</td>
+                                    <td>{{ date('G:i:s \l\e d-m-Y', strtotime($demandes_valid->created_at)) }}</td>
+                                    <td>{{ date('G:i:s \l\e d-m-Y', strtotime($demandes_valid->updated_at)) }}</td>
                                     <td>
-                                    <?php if ($_SESSION["demandes_valid"][$i]->nomEtat == 'Prise en compte') { ?>
+                                    @if ($demandes_valid->nomEtat == 'Prise en compte')
                                         {!! Form::open(['url' => 'majetatdemande']) !!}
-                                        {{ Form::hidden('id', $_SESSION['demandes_valid'][$i]->id) }}
+                                        {{ Form::hidden('id', $demandes_valid->id) }}
                                         {{ Form::hidden('id_etat', '2') }}
                                         {{ Form::submit('Valider') }}
                                         {!! Form::close() !!}
-                                    <?php } ?>
+                                    @endif
                                     </td>
                                 </tr>
-                            <?php } ?>
+                            @endforeach
                         </table>
-                    <?php } else { ?>
+                    @else
                         <section id="demandes_utilisateur">
                             <h4>Demandes utilisateurs :</h4><br />
                             <p>Vous n'avez pas de demandes d'utilisateurs.</p>
                         </section>
-                    <?php }
-                }
-                if (isset($_SESSION['demandes_pers'][0])) { ?>
+                    @endif
+                @endif
+                @if (isset($_SESSION['demandes_pers'][0]))
                     <table id="demandes_pers">
                         <caption class="titre_demande">Liste des demandes effectuées :</caption>
                         <tr>
@@ -189,59 +98,59 @@
                             <th>Création</th>
                             <th>Dernière mise à jour</th>
                         </tr>
-                    <?php for ($j=0; $j < $_SESSION['demandes_pers']->count(); $j++) { ?>
+                    @foreach ($_SESSION['demandes_pers'] as $lignes => $demandes_pers)
                         <tr>
-                            <td>{{ $_SESSION['demandes_pers'][$j]->nomDemande }}</td>
-                            <td>{{ $_SESSION['demandes_pers'][$j]->quantiteDemande }}</td>
+                            <td>{{ $demandes_pers->nomDemande }}</td>
+                            <td>{{ $demandes_pers->quantiteDemande }}</td>
                             <td class="lien_produit">
-                                <?php if ($_SESSION['demandes_pers'][$j]->lienProduit != 'Aucun lien fourni') { ?>
-                                <a href="{{ $_SESSION['demandes_pers'][$j]->lienProduit }}" target="_blank">{{ $_SESSION['demandes_pers'][$j]->lienProduit }}</a>
-                                <?php } else {
-                                    echo $_SESSION['demandes_pers'][$j]->lienProduit;
-                                } ?>
+                                @if ($demandes_pers->lienProduit != 'Aucun lien fourni')
+                                    <a href="{{ $demandes_pers->lienProduit }}" target="_blank">{{ $demandes_pers->lienProduit }}</a>
+                                @else
+                                    {{ $demandes_pers->lienProduit }}
+                                @endif
                             </td>
-                            <td>{{ $_SESSION['demandes_pers'][$j]->nomEtat }}</td>
-                            <td>{{ date('G:i:s \l\e d-m-Y', strtotime($_SESSION['demandes_pers'][$j]->created_at)) }}</td>
-                            <td>{{ date('G:i:s \l\e d-m-Y', strtotime($_SESSION['demandes_pers'][$j]->updated_at)) }}</td>
+                            <td>{{ $demandes_pers->nomEtat }}</td>
+                            <td>{{ date('G:i:s \l\e d-m-Y', strtotime($demandes_pers->created_at)) }}</td>
+                            <td>{{ date('G:i:s \l\e d-m-Y', strtotime($demandes_pers->updated_at)) }}</td>
                         </tr>
-                    <?php } ?>
+                    @endforeach
                     </table>
-                <?php } else { ?>
+                @else
                     <section id="demandes_spec">
                         <h4>Demandes spécifiques :</h4><br />
                         <p>Vous n'avez pas encore effectué de demandes.</p>
                     </section>
-                <?php }
-            } else {
-                if (isset($_SESSION['demandes'][0])) { ?>
+                @endif
+            @else
+                @if (isset($_SESSION['demandes'][0]))
                     <div id="choix_departements">
                         <p id="departements">Départements :</p>
-                        <select id="select_services" onchange="selectionServices()">
+                        <select id="select_services" onchange="selectionServices('demandesspecifiques')">
                             <option value="Tous">Tous</option>
-                        <?php for ($k=0; $k < $_SESSION['services']->count(); $k++) {
-                            if (isset($_GET['service']) AND $_GET['service'] == $_SESSION['services'][$k]->nomService) {
-                                echo '<option value="'.$_SESSION['services'][$k]->nomService.'" selected>'.$_SESSION['services'][$k]->nomService.'</option>';
-                            } else {
-                                echo '<option value="'.$_SESSION['services'][$k]->nomService.'">'.$_SESSION['services'][$k]->nomService.'</option>';
-                            }
-                        } ?>
+                        @foreach ($_SESSION['services'] as $lignes => $service)
+                            @if (isset($_GET['service']) AND $_GET['service'] == $service->nomService)
+                                <option value="{{ $service->nomService }}" selected >{{ $service->nomService }}</option>
+                            @else
+                                <option value="{{ $service->nomService }}" >{{ $service->nomService }}</option>
+                            @endif
+                        @endforeach
                         </select>
                     </div>
 
-                    <?php for ($l=0; $l < $_SESSION['services']->count(); $l++) {
-                        if (isset($_GET['service']) AND $_GET['service'] == $_SESSION['services'][$l]->nomService) {
-                            $nom = $_GET['service'];
-                        }
-                    }
-                    $nomService = $nom ?? 'demandes';
+                    @foreach ($_SESSION['services'] as $lignes => $service)
+                        @if (isset($_GET['service']) AND $_GET['service'] == $service->nomService)
+                            @php ($nom = $_GET['service'])
+                        @endif
+                    @endforeach
+                    @php ($nomService = $nom ?? 'demandes')
 
-                    $envoye = $envoyer ?? false;
-                    if ($envoye) { ?>
-                        <p id="confirm"><img class="img_confirm" src="http://localhost/PPE3/Application/storage/app/public/confirm.png" alt="Icon de confirmation" /> La demande à bien été mise à jour</p><br />
-                        <?php header('Refresh: 5; url=demandesspecifiques');
-                    }
+                    @php ($envoye = $envoyer ?? false)
+                    @if ($envoye)
+                        <p id="confirm"><img class="img_confirm" src="{{ asset('storage/app/public/confirm.png') }}" alt="Icon de confirmation" /> La demande à bien été mise à jour</p><br />
+                        @php (header('Refresh: 5; url=demandesspecifiques'))
+                    @endif
 
-                    if (isset($_SESSION["$nomService"][0])) { ?>
+                    @if (isset($_SESSION["$nomService"][0]))
                         <table id="demandes_list">
                             <caption>Liste des demandes spécifiques</caption>
                             <tr>
@@ -254,90 +163,66 @@
                                 <th>Création</th>
                                 <th>Dernière mise à jour</th>
                                 <th>
-                                <?php for ($m=0; $m < $_SESSION["$nomService"]->count(); $m++) {
-                                    if (($_SESSION["$nomService"][$m]->nomEtat == 'Validé' OR $_SESSION["$nomService"][$m]->nomEtat == 'En cours') AND !isset($afficher)) {
-                                        echo 'Modifier l\'état';
-                                        $afficher = true;
-                                    }
-                                } ?>
+                                @foreach ($_SESSION["$nomService"] as $lignes => $nomservice)
+                                    @if (($nomservice->nomEtat == 'Validé' OR $nomservice->nomEtat == 'En cours') AND !isset($afficher))
+                                        {{ 'Modifier l\'état' }}
+                                        @php ($afficher = true)
+                                    @endif
+                                @endforeach
                                 </th>
                             </tr>
-                        <?php for ($n=0; $n < $_SESSION["$nomService"]->count(); $n++) { ?>
+                        @foreach ($_SESSION["$nomService"] as $lignes => $nomservice)
                             <tr>
-                                <td>{{ $_SESSION["$nomService"][$n]->nom }}</td>
-                                <td>{{ $_SESSION["$nomService"][$n]->prenom }}</td>
-                                <td>{{ $_SESSION["$nomService"][$n]->nomDemande }}</td>
-                                <td>{{ $_SESSION["$nomService"][$n]->quantiteDemande }}</td>
+                                <td>{{ $nomservice->nom }}</td>
+                                <td>{{ $nomservice->prenom }}</td>
+                                <td>{{ $nomservice->nomDemande }}</td>
+                                <td>{{ $nomservice->quantiteDemande }}</td>
                                 <td class="lien_produit">
-                                    <?php if ($_SESSION["$nomService"][$n]->lienProduit != 'Aucun lien fourni') { ?>
-                                        <a href="<?php echo $_SESSION["$nomService"][$n]->lienProduit; ?>" target="_blank">{{ $_SESSION["$nomService"][$n]->lienProduit }}</a>
-                                    <?php } else {
-                                        echo $_SESSION["$nomService"][$n]->lienProduit;
-                                    } ?>
+                                    @if ($nomservice->lienProduit != 'Aucun lien fourni')
+                                        <a href="{{ $nomservice->lienProduit }}" target="_blank">{{ $nomservice->lienProduit }}</a>
+                                    @else
+                                        {{ $nomservice->lienProduit }}
+                                    @endif
                                 </td>
-                                <td>{{ $_SESSION["$nomService"][$n]->nomEtat }}</td>
-                                <td>{{ date('G:i:s \l\e d-m-Y', strtotime($_SESSION["$nomService"][$n]->created_at)) }}</td>
-                                <td>{{ date('G:i:s \l\e d-m-Y', strtotime($_SESSION["$nomService"][$n]->updated_at)) }}</td>
+                                <td>{{ $nomservice->nomEtat }}</td>
+                                <td>{{ date('G:i:s \l\e d-m-Y', strtotime($nomservice->created_at)) }}</td>
+                                <td>{{ date('G:i:s \l\e d-m-Y', strtotime($nomservice->updated_at)) }}</td>
                                 <td>
-                                <?php if ($_SESSION["$nomService"][$n]->nomEtat == 'Validé') { ?>
+                                @if ($nomservice->nomEtat == 'Validé')
                                     {!! Form::open(['url' => 'majetatdemande']) !!}
-                                    {{ Form::hidden('id', $_SESSION["$nomService"][$n]->id) }}
+                                    {{ Form::hidden('id', $nomservice->id) }}
                                     {{ Form::hidden('id_etat', '3') }}
                                     {{ Form::submit('En Cours') }}
                                     {!! Form::close() !!}
-                                <?php } elseif ($_SESSION["$nomService"][$n]->nomEtat == 'En cours') { ?>
+                                @elseif ($nomservice->nomEtat == 'En cours')
                                     {!! Form::open(['url' => 'majetatdemande', 'id' => 'livre']) !!}
-                                    {{ Form::hidden('id', $_SESSION["$nomService"][$n]->id) }}
+                                    {{ Form::hidden('id', $nomservice->id) }}
                                     {{ Form::hidden('id_etat', '4') }}
                                     {{ Form::submit('Livré') }}
                                     {!! Form::close() !!}
 
                                     {!! Form::open(['url' => 'majetatdemande']) !!}
-                                    {{ Form::hidden('id', $_SESSION["$nomService"][$n]->id) }}
+                                    {{ Form::hidden('id', $nomservice->id) }}
                                     {{ Form::hidden('id_etat', '5') }}
                                     {{ Form::submit('Annulé') }}
                                     {!! Form::close() !!}
-                                <?php } ?>
+                                @endif
                                 </td>
                             </tr>
-                        <?php } ?>
+                        @endforeach
                         </table>
-                    <?php } else { ?>
+                    @else
                         <section id="demande_util_dep">
                             <h4>Liste des demandes des utilisateurs :</h4><br />
                             <p>Il n'y a pas encore de demandes d'utilisateurs de ce département.</p>
                         </section>
-                    <?php } ?>
-                <?php } else { ?>
+                    @endif
+                @else
                     <section id="demande_util">
                         <h4>Liste des demandes des utilisateurs :</h4><br />
                         <p>Il n'y a pas encore de demandes d'utilisateurs.</p>
                     </section>
-                <?php } ?>
-            <?php } ?>
+                @endif
+            @endif
         </section>
-        <footer>
-            <?php if (isset($_SESSION['commandes_fini'][0])) { ?>
-                <table id="commandes_fini">
-                    <caption>Historique des commandes</caption>
-                    <tr>
-                        <th class="tabl_comm">Nom</th>
-                        <th class="tabl_comm">Quantitée demandée</th>
-                        <th class="tabl_comm">État</th>
-                        <th class="tabl_comm">Dernière mise à jour</th>
-                    </tr>
-                <?php for ($o=0; $o < $_SESSION['commandes_fini']->count(); $o++) { ?>
-                    <tr>
-                        <td class="tabl_comm">{{ $_SESSION['commandes_fini'][$o]->nomCommandes }}</td>
-                        <td class="tabl_comm">{{ $_SESSION['commandes_fini'][$o]->quantiteDemande }}</td>
-                        <td class="tabl_comm">{{ $_SESSION['commandes_fini'][$o]->nomEtat }}</td>
-                        <td class="tabl_comm">{{ date('G:i:s \l\e d-m-Y', strtotime($_SESSION['commandes_fini'][$o]->updated_at)) }}</td>
-                    </tr>
-                <?php } ?>
-                </table>
-            <?php } ?>
-            <p id="service">Vous êtes dans le service : {{ $_SESSION['service'] }}</p>
-            <p id="categorie">Votre rôle est : {{ $_SESSION['categorie'] }}</p>
-        </footer>
-    </body>
-</html>
+@include('footer')

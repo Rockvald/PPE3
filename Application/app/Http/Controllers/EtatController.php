@@ -13,7 +13,7 @@ class EtatController extends Controller
     {
         $validatedData = $request->validate([
             'id' => 'required',
-            'id_etat' => 'required|min:2|max:5',
+            'id_etat' => 'required|min:1|max:5',
         ]);
 
         session_start();

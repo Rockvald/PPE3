@@ -74,8 +74,9 @@ class PersonnelController extends Controller
                 $dateActuel = date_create(date('Y-m-d'));
                 $dateCommande = date_create(date('Y-m-d', strtotime($commande_fini[$i]->updated_at)));
                 $diff = date_diff($dateActuel, $dateCommande);
+                // Ne pas supprimer les donnée, juste ne pas les afficher
                 if ($diff->format('%a') > 14) {
-                    $commande_suppr = Commandes::where('id', $commande_fini[$i]->id)->delete();
+                    //$commande_suppr = Commandes::where('id', $commande_fini[$i]->id)->delete();
 
                     $commande_fini = Commandes::join('personnels', 'commandes.idPersonnel', 'personnels.id')->join('etats', 'commandes.idEtat', 'etats.id')->select('commandes.id', 'nomCommandes', 'quantiteDemande', 'commandes.updated_at', 'personnels.mail', 'etats.nomEtat')->where('personnels.mail', $Personnel[0]->mail)->where('etats.nomEtat', 'Livré')->orWhere('etats.nomEtat', 'Annulé')->orderby('commandes.id', 'asc')->get();
                 }
