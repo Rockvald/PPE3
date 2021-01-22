@@ -5,10 +5,10 @@
             {{ Form::image(asset('storage/app/public/icon-search.png'), 'envoyer', ['id'=>'envoyer', 'alt'=>'Icone de loupe']) }}
             {!! Form::close() !!}
             <div id="nom_deconnexion">
-                <p id="nom_prenom">{{ $_SESSION['prenom'] }} {{ $_SESSION['nom'] }}</p>
+                <p id="nom_prenom">{{ $Personnel[0]->prenom }} {{ $Personnel[0]->nom }}</p>
                 <button type="button" name="deconnexion" id="deconnexion" onclick="window.location.href='deconnexion'">Se déconnecter</button>
             </div>
-            @if (isset($_SESSION['commandes'][0]))
+            @if (isset($commande[0]))
                 <table id="commandes_cours">
                     <caption>Commandes en cours</caption>
                     <tr>
@@ -17,7 +17,7 @@
                         <th class="tabl_comm">État</th>
                         <th class="tabl_comm">Dernière mise à jour</th>
                     </tr>
-                @foreach ($_SESSION['commandes'] as $lignes => $commande_enCours)
+                @foreach ($commande as $lignes => $commande_enCours)
                     <tr>
                         <td class="tabl_comm">{{ $commande_enCours->nomCommandes }}</td>
                         <td class="tabl_comm">{{ $commande_enCours->quantiteDemande }}</td>

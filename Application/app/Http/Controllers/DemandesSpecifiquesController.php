@@ -11,7 +11,9 @@ class DemandesSpecifiquesController extends Controller
 {
     public function afficher()
     {
-        session_start();
+        if (session_status() == 1) {
+            session_start();
+        }
 
         if (!isset($_SESSION['mail'])) {
             header('Refresh: 0; url=http://localhost/PPE3/Application/server.php?page=demandesspecifiques');
@@ -24,18 +26,18 @@ class DemandesSpecifiquesController extends Controller
 
         $demandes_valid = DemandesSpecifiques::join('etats', 'demandes_specifiques.idEtat', 'etats.id')->join('personnels', 'demandes_specifiques.idPersonnel', 'personnels.id')->join('services', 'personnels.idService', 'services.id')->select('demandes_specifiques.*', 'nomEtat', 'nom', 'prenom', 'nomService')->where('nomService', $_SESSION['service'])->orderby('demandes_specifiques.id', 'asc')->get();
 
-        $demande_fini = DemandesSpecifiques::join('etats', 'demandes_specifiques.idEtat', 'etats.id')->join('personnels', 'demandes_specifiques.idPersonnel', 'personnels.id')->select('demandes_specifiques.*', 'nomEtat', 'mail')->where('mail', $_SESSION['mail'])->where('etats.nomEtat', 'Livré')->orWhere('etats.nomEtat', 'Annulé')->orderby('demandes_specifiques.id', 'asc')->get();
+        $dateActuel = date_create(date('Y-m-d'));
+        $dateMin = date_modify($dateActuel, '-1 month');
+        $demande_fini = DemandesSpecifiques::join('etats', 'demandes_specifiques.idEtat', 'etats.id')->join('personnels', 'demandes_specifiques.idPersonnel', 'personnels.id')->select('demandes_specifiques.*', 'nomEtat', 'mail')->where('etats.nomEtat', 'Livré')->where('mail', $_SESSION['mail'])->where('demandes_specifiques.updated_at', '>', $dateMin)->orWhere('etats.nomEtat', 'Annulé')->where('mail', $_SESSION['mail'])->where('demandes_specifiques.updated_at', '>', $dateMin)->orderby('demandes_specifiques.id', 'asc')->get();
 
-        for ($i=0; $i < $demande_fini->count(); $i++) {
+        /*for ($i=0; $i < $demande_fini->count(); $i++) {
             $dateActuel = date_create(date('Y-m-d'));
             $dateCommande = date_create(date('Y-m-d', strtotime($demande_fini[$i]->updated_at)));
             $diff = date_diff($dateActuel, $dateCommande);
             if ($diff->format('%a') > 14) {
-                //$commande_suppr = DemandesSpecifiques::where('id', $demande_fini[$i]->id)->delete();
-
                 $demande_fini = DemandesSpecifiques::join('etats', 'demandes_specifiques.idEtat', 'etats.id')->join('personnels', 'demandes_specifiques.idPersonnel', 'personnels.id')->select('demandes_specifiques.*', 'nomEtat', 'mail')->where('mail', $_SESSION['mail'])->where('etats.nomEtat', 'Livré')->orWhere('etats.nomEtat', 'Annulé')->orderby('demandes_specifiques.id', 'asc')->get();
             }
-        }
+        }*/
 
         $Service = Service::select('services.*')->get();
 

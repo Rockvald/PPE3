@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\FamillesFournitures;
 use App\Models\Fournitures;
+use App\Models\Personnel;
 
 class FamillesFournituresController extends Controller
 {
     public function afficher()
     {
-        session_start();
+        if (session_status() == 1) {
+            session_start();
+        }
 
         if (!isset($_SESSION['mail'])) {
             header('Refresh: 0; url=http://localhost/PPE3/Application/server.php?page=famillesfournitures');

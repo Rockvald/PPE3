@@ -13,38 +13,50 @@ class CommandesController extends Controller
 {
     public function afficher()
     {
-        session_start();
+        if (session_status() == 1) {
+            session_start();
+        }
 
         if (!isset($_SESSION['mail'])) {
             header('Refresh: 0; url=http://localhost/PPE3/Application/server.php?page=suivi');
             exit;
         }
 
+        $Personnel = Personnel::donneesPersonnel()[0];
+
+        $commande = Personnel::donneesPersonnel()[1];
+
+        $commande_fini = Personnel::donneesPersonnel()[2];
+
         $commande_utilisateur = Commandes::join('personnels', 'commandes.idPersonnel', 'personnels.id')->join('etats', 'commandes.idEtat', 'etats.id')->select('commandes.*', 'mail', 'nomEtat')->where('mail', $_SESSION['mail'])->orderby('commandes.id', 'asc')->get();
 
         $commande_complet = Commandes::join('personnels', 'commandes.idPersonnel', 'personnels.id')->join('etats', 'commandes.idEtat', 'etats.id')->select('commandes.*', 'nom', 'prenom', 'nomEtat')->orderby('commandes.id', 'asc')->get();
 
-        $commande_valid = Commandes::join('personnels', 'commandes.idPersonnel', 'personnels.id')->join('services', 'personnels.idService', 'services.id')->join('etats', 'commandes.idEtat', 'etats.id')->select('commandes.*', 'nom', 'prenom', 'nomEtat', 'nomService')->where('nomService', $_SESSION['service'])->orderby('commandes.id', 'asc')->get();
+        $commande_valid = Commandes::join('personnels', 'commandes.idPersonnel', 'personnels.id')->join('services', 'personnels.idService', 'services.id')->join('etats', 'commandes.idEtat', 'etats.id')->select('commandes.*', 'nom', 'prenom', 'nomEtat', 'nomService')->where('nomService', $Personnel[0]->nomService)->orderby('commandes.id', 'asc')->get();
 
         $Service = Service::select('services.*')->get();
 
-        for ($i=0; $i < $Service->count(); $i++) {
-            $_SESSION[$Service[$i]->nomService] = Commandes::join('personnels', 'commandes.idPersonnel', 'personnels.id')->join('services', 'personnels.idService', 'services.id')->join('etats', 'commandes.idEtat', 'etats.id')->select('commandes.*', 'nom', 'prenom', 'nomEtat', 'nomService')->where('nomService', $Service[$i]->nomService)->orderby('commandes.id', 'asc')->get();
+        foreach ($Service as $lignes => $service) {
+            $nomService = $service->nomService;
+            $$nomService = Commandes::join('personnels', 'commandes.idPersonnel', 'personnels.id')->join('services', 'personnels.idService', 'services.id')->join('etats', 'commandes.idEtat', 'etats.id')->select('commandes.*', 'nom', 'prenom', 'nomEtat', 'nomService')->where('nomService', $service->nomService)->orderby('commandes.id', 'asc')->get();
+            $donnesService["$nomService"] = $$nomService;
         }
 
         $Etat = Etat::select('*')->get();
 
-        for ($i=0; $i < $Etat->count(); $i++) {
-            $_SESSION[$Etat[$i]->nomEtat] = Commandes::join('personnels', 'commandes.idPersonnel', 'personnels.id')->join('etats', 'commandes.idEtat', 'etats.id')->select('commandes.*', 'nom', 'prenom', 'mail', 'nomEtat')->where('mail', $_SESSION['mail'])->where('nomEtat', $Etat[$i]->nomEtat)->orderby('commandes.id', 'asc')->get();
+        foreach ($Etat as $lignes => $etat) {
+            $nomEtat = $etat->nomEtat;
+            $$nomEtat = Commandes::join('personnels', 'commandes.idPersonnel', 'personnels.id')->join('etats', 'commandes.idEtat', 'etats.id')->select('commandes.*', 'nom', 'prenom', 'mail', 'nomEtat')->where('mail', $_SESSION['mail'])->where('nomEtat', $etat->nomEtat)->orderby('commandes.id', 'asc')->get();
+            $donnesEtat["$nomEtat"] = $$nomEtat;
         }
 
-        $_SESSION['etats'] = $Etat;
+        /*$_SESSION['etats'] = $Etat;
         $_SESSION['services'] = $Service;
         $_SESSION['commande_utilisateur'] = $commande_utilisateur;
         $_SESSION['commande_complet'] = $commande_complet;
-        $_SESSION['commande_valid'] = $commande_valid;
+        $_SESSION['commande_valid'] = $commande_valid;*/
 
-        return view('suivi');
+        return view('suivi', ['Personnel' => $Personnel, 'commande' => $commande, 'commandes_fini' => $commande_fini, 'commande_utilisateur' => $commande_utilisateur, 'commande_complet' => $commande_complet, 'commande_valid' => $commande_valid, 'services' => $Service, 'donnesService' => $donnesService, 'etats' => $Etat, 'donnesEtat' => $donnesEtat]);
     }
 
     public function commander(Request $request)

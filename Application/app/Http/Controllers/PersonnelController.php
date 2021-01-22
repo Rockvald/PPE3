@@ -29,6 +29,7 @@ class PersonnelController extends Controller
             'mdp' => 'required',
             'categorie' => 'required',
             'service' => 'required',
+            'page' => 'required',
         ]);
 
         $Personnel = new Personnel;
@@ -68,33 +69,32 @@ class PersonnelController extends Controller
         }
         elseif ($request->email == $Personnel[0]->mail AND password_verify($request->mdp, $Personnel[0]->pass))
         {
-            $commande_fini = Commandes::join('personnels', 'commandes.idPersonnel', 'personnels.id')->join('etats', 'commandes.idEtat', 'etats.id')->select('commandes.id', 'nomCommandes', 'quantiteDemande', 'commandes.updated_at', 'personnels.mail', 'etats.nomEtat')->where('personnels.mail', $Personnel[0]->mail)->where('etats.nomEtat', 'Livré')->orWhere('etats.nomEtat', 'Annulé')->orderby('commandes.id', 'asc')->get();
+            /*$dateActuel = date_create(date('Y-m-d'));
+            $dateMin = date_modify($dateActuel, '-1 month');
+            $commande_fini = Commandes::join('personnels', 'commandes.idPersonnel', 'personnels.id')->join('etats', 'commandes.idEtat', 'etats.id')->select('commandes.id', 'nomCommandes', 'quantiteDemande', 'commandes.updated_at', 'personnels.mail', 'etats.nomEtat')->where('commandes.updated_at', '>', $dateMin)->where('personnels.mail', $_SESSION['mail'])->where('etats.nomEtat', 'Livré')->orWhere('etats.nomEtat', 'Annulé')->where('commandes.updated_at', '>', $dateMin)->where('personnels.mail', $_SESSION['mail'])->orderby('commandes.id', 'asc')->get();*/
 
-            for ($i=0; $i < $commande_fini->count(); $i++) {
+            /*for ($i=0; $i < $commande_fini->count(); $i++) {
                 $dateActuel = date_create(date('Y-m-d'));
                 $dateCommande = date_create(date('Y-m-d', strtotime($commande_fini[$i]->updated_at)));
                 $diff = date_diff($dateActuel, $dateCommande);
-                // Ne pas supprimer les donnée, juste ne pas les afficher
                 if ($diff->format('%a') > 14) {
-                    //$commande_suppr = Commandes::where('id', $commande_fini[$i]->id)->delete();
-
-                    $commande_fini = Commandes::join('personnels', 'commandes.idPersonnel', 'personnels.id')->join('etats', 'commandes.idEtat', 'etats.id')->select('commandes.id', 'nomCommandes', 'quantiteDemande', 'commandes.updated_at', 'personnels.mail', 'etats.nomEtat')->where('personnels.mail', $Personnel[0]->mail)->where('etats.nomEtat', 'Livré')->orWhere('etats.nomEtat', 'Annulé')->orderby('commandes.id', 'asc')->get();
+                    $commande_fini = Commandes::join('personnels', 'commandes.idPersonnel', 'personnels.id')->join('etats', 'commandes.idEtat', 'etats.id')->select('commandes.id', 'nomCommandes', 'quantiteDemande', 'commandes.updated_at', 'personnels.mail', 'etats.nomEtat')->where('personnels.mail', $_SESSION['mail'])->where('etats.nomEtat', 'Livré')->orWhere('etats.nomEtat', 'Annulé')->orderby('commandes.id', 'asc')->get();
                 }
-            }
+            }*/
 
-            $commande = Commandes::join('personnels', 'commandes.idPersonnel', 'personnels.id')->join('etats', 'commandes.idEtat', 'etats.id')->select('commandes.id', 'nomCommandes', 'quantiteDemande', 'commandes.updated_at', 'personnels.mail', 'etats.nomEtat')->where('personnels.mail', $Personnel[0]->mail)->where('etats.nomEtat', 'En cours')->orderby('commandes.id', 'asc')->get();
+            /*$commande = Commandes::join('personnels', 'commandes.idPersonnel', 'personnels.id')->join('etats', 'commandes.idEtat', 'etats.id')->select('commandes.id', 'nomCommandes', 'quantiteDemande', 'commandes.updated_at', 'personnels.mail', 'etats.nomEtat')->where('personnels.mail', $_SESSION['mail'])->where('etats.nomEtat', 'En cours')->orderby('commandes.id', 'asc')->get();
 
             $commande_liste = Commandes::join('personnels', 'commandes.idPersonnel', 'personnels.id')->join('etats', 'commandes.idEtat', 'etats.id')->select('commandes.id', 'nomCommandes', 'quantiteDemande', 'commandes.created_at', 'commandes.updated_at', 'personnels.nom', 'personnels.prenom', 'etats.nomEtat')->where('etats.nomEtat', 'En cours')->orderby('commandes.updated_at', 'asc')->get();
 
             $Personnels = Personnel::join('services', 'personnels.idService', 'services.id')->join('categories', 'personnels.idCategorie', 'categories.id')->select('*')->orderby('personnels.id', 'asc')->get();
 
-            $Fournitures = Fournitures::join('familles_fournitures', 'fournitures.idFamille', 'familles_fournitures.id')->select('fournitures.*', 'nomFamille')->orderby('fournitures.id', 'asc')->get();
+            $Fournitures = Fournitures::join('familles_fournitures', 'fournitures.idFamille', 'familles_fournitures.id')->select('fournitures.*', 'nomFamille')->orderby('fournitures.id', 'asc')->get();*/
 
-            session_start();
+            /*session_start();
 
             $_SESSION['nom'] = $Personnel[0]->nom;
             $_SESSION['prenom'] = $Personnel[0]->prenom;
-            $_SESSION['mail'] = $Personnel[0]->mail;
+            $_SESSION['mail'] = $_SESSION['mail'];
             $_SESSION['pass'] = $Personnel[0]->pass;
             $_SESSION['categorie'] = $Personnel[0]->nomCategorie;
             $_SESSION['service'] = $Personnel[0]->nomService;
@@ -103,9 +103,17 @@ class PersonnelController extends Controller
             $_SESSION['commandes_fini'] = $commande_fini;
             $_SESSION['commandes_liste'] = $commande_liste;
             $_SESSION['personnels'] = $Personnels;
-            $_SESSION['fournitures'] = $Fournitures;
+            $_SESSION['fournitures'] = $Fournitures;*/
 
-            return redirect()->route($request->page);
+            session_start();
+
+            $_SESSION['mail'] = $request->email;
+
+            if ($request->page != 'accueil') {
+                return redirect()->route($request->page);
+            } else {
+                return $this->afficher();
+            }
         }
     }
 
@@ -126,9 +134,23 @@ class PersonnelController extends Controller
 
     public function afficher()
     {
-        session_start();
+        if (session_status() == 1) {
+            session_start();
+        }
 
-        return view('accueil');
+        $Personnel = Personnel::donneesPersonnel()[0];
+
+        $commande = Personnel::donneesPersonnel()[1];
+
+        $commande_fini = Personnel::donneesPersonnel()[2];
+
+        $commande_liste = Commandes::join('personnels', 'commandes.idPersonnel', 'personnels.id')->join('etats', 'commandes.idEtat', 'etats.id')->select('commandes.id', 'nomCommandes', 'quantiteDemande', 'commandes.created_at', 'commandes.updated_at', 'personnels.nom', 'personnels.prenom', 'etats.nomEtat')->where('etats.nomEtat', 'En cours')->orderby('commandes.updated_at', 'asc')->get();
+
+        $Personnels = Personnel::join('services', 'personnels.idService', 'services.id')->join('categories', 'personnels.idCategorie', 'categories.id')->select('*')->orderby('personnels.id', 'asc')->get();
+
+        $Fournitures = Fournitures::join('familles_fournitures', 'fournitures.idFamille', 'familles_fournitures.id')->select('fournitures.*', 'nomFamille')->orderby('fournitures.id', 'asc')->get();
+
+        return view('accueil', ['Personnel' => $Personnel, 'commande' => $commande, 'commandes_liste' => $commande_liste, 'commandes_fini' => $commande_fini, 'Personnels' => $Personnels, 'Fournitures' => $Fournitures]);
     }
 
     public function message(Request $request)
@@ -257,7 +279,9 @@ class PersonnelController extends Controller
 
     public function messagerie()
     {
-        session_start();
+        if (session_status() == 1) {
+            session_start();
+        }
 
         if (!isset($_SESSION['mail'])) {
             header('Refresh: 0; url=http://localhost/PPE3/Application/server.php?page=messagerie');
@@ -274,7 +298,9 @@ class PersonnelController extends Controller
 
     public function statistique()
     {
-        session_start();
+        if (session_status() == 1) {
+            session_start();
+        }
 
         if (!isset($_SESSION['mail'])) {
             header('Refresh: 0; url=http://localhost/PPE3/Application/server.php?page=statistique');
@@ -291,13 +317,21 @@ class PersonnelController extends Controller
 
     public function personnalisationducompte()
     {
-        session_start();
+        if (session_status() == 1) {
+            session_start();
+        }
 
         if (!isset($_SESSION['mail'])) {
             header('Refresh: 0; url=http://localhost/PPE3/Application/server.php?page=personnalisationducompte');
             exit;
         }
 
-        return view('personnalisationducompte');
+        $Personnel = Personnel::donneesPersonnel()[0];
+
+        $commande = Personnel::donneesPersonnel()[1];
+
+        $commande_fini = Personnel::donneesPersonnel()[2];
+
+        return view('personnalisationducompte', ['Personnel' => $Personnel, 'commande' => $commande, 'commandes_fini' => $commande_fini]);
     }
 }

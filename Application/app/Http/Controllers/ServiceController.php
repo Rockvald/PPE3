@@ -10,7 +10,9 @@ class ServiceController extends Controller
 {
     public function afficher()
     {
-        session_start();
+        if (session_status() == 1) {
+            session_start();
+        }
 
         if (!isset($_SESSION['mail'])) {
             header('Refresh: 0; url=http://localhost/PPE3/Application/server.php?page=departements');
