@@ -19,21 +19,29 @@ class ServiceController extends Controller
             exit;
         }
 
+        $Personnel = Personnel::donneesPersonnel()[0];
+
+        $commande = Personnel::donneesPersonnel()[1];
+
+        $commande_fini = Personnel::donneesPersonnel()[2];
+
         $Services = Service::select('services.*')->get();
 
-        $ServiceUtilvalideur = Service::join('personnels', 'services.id', 'personnels.idService')->join('categories', 'personnels.idCategorie', 'categories.id')->select('services.*', 'nom', 'prenom', 'mail', 'nomCategorie')->where('nomService', $_SESSION['service'])->where('nomCategorie', 'Valideur')->get();
+        $Personnels = Personnel::join('services', 'personnels.idService', 'services.id')->join('categories', 'personnels.idCategorie', 'categories.id')->select('*')->orderby('personnels.id', 'asc')->get();
 
-        $ServiceUtil = Service::select('services.*')->where('nomService', $_SESSION['service'])->get();
+        $ServiceUtilvalideur = Service::join('personnels', 'services.id', 'personnels.idService')->join('categories', 'personnels.idCategorie', 'categories.id')->select('services.*', 'nom', 'prenom', 'mail', 'nomCategorie')->where('nomService', $Personnel[0]->nomService)->where('nomCategorie', 'Valideur')->get();
+
+        $ServiceUtil = Service::select('services.*')->where('nomService', $Personnel[0]->nomService)->get();
 
         if (isset($ServiceUtilvalideur[0])) {
-            $_SESSION['service_util'] = $ServiceUtilvalideur;
+            $service_util = $ServiceUtilvalideur;
         } else {
-            $_SESSION['service_util'] = $ServiceUtil;
+            $service_util = $ServiceUtil;
         }
 
-        $_SESSION['services'] = $Services;
+        //$_SESSION['services'] = $Services;
 
-        return view('departements');
+        return view('departements', ['Personnel' => $Personnel, 'commande' => $commande, 'commandes_fini' => $commande_fini, 'personnels' => $Personnels, 'services' => $Services, 'service_util' => $service_util]);
     }
 
     public function creationdepartement(Request $request)
@@ -50,13 +58,31 @@ class ServiceController extends Controller
         $Service->descriptionService = $request->description_departement;
         $Service->save();
 
+        $Personnel = Personnel::donneesPersonnel()[0];
+
+        $commande = Personnel::donneesPersonnel()[1];
+
+        $commande_fini = Personnel::donneesPersonnel()[2];
+
+        $Personnels = Personnel::join('services', 'personnels.idService', 'services.id')->join('categories', 'personnels.idCategorie', 'categories.id')->select('*')->orderby('personnels.id', 'asc')->get();
+
+        $ServiceUtilvalideur = Service::join('personnels', 'services.id', 'personnels.idService')->join('categories', 'personnels.idCategorie', 'categories.id')->select('services.*', 'nom', 'prenom', 'mail', 'nomCategorie')->where('nomService', $Personnel[0]->nomService)->where('nomCategorie', 'Valideur')->get();
+
+        $ServiceUtil = Service::select('services.*')->where('nomService', $Personnel[0]->nomService)->get();
+
+        if (isset($ServiceUtilvalideur[0])) {
+            $service_util = $ServiceUtilvalideur;
+        } else {
+            $service_util = $ServiceUtil;
+        }
+
         $Services = Service::select('services.*')->get();
 
-        $_SESSION['services'] = $Services;
+        //$_SESSION['services'] = $Services;
 
         $cree = true;
 
-        return view('departements', ['cree' => $cree]);
+        return view('departements', ['cree' => $cree, 'Personnel' => $Personnel, 'commande' => $commande, 'commandes_fini' => $commande_fini, 'personnels' => $Personnels, 'services' => $Services, 'service_util' => $service_util]);
     }
 
     public function modificationvalideur(Request $request)
@@ -78,10 +104,30 @@ class ServiceController extends Controller
 
         $Personnels = Personnel::join('services', 'personnels.idService', 'services.id')->join('categories', 'personnels.idCategorie', 'categories.id')->select('*')->orderby('personnels.id', 'asc')->get();
 
-        $_SESSION['personnels'] = $Personnels;
+        $Personnel = Personnel::donneesPersonnel()[0];
+
+        $commande = Personnel::donneesPersonnel()[1];
+
+        $commande_fini = Personnel::donneesPersonnel()[2];
+
+        $Personnels = Personnel::join('services', 'personnels.idService', 'services.id')->join('categories', 'personnels.idCategorie', 'categories.id')->select('*')->orderby('personnels.id', 'asc')->get();
+
+        $ServiceUtilvalideur = Service::join('personnels', 'services.id', 'personnels.idService')->join('categories', 'personnels.idCategorie', 'categories.id')->select('services.*', 'nom', 'prenom', 'mail', 'nomCategorie')->where('nomService', $Personnel[0]->nomService)->where('nomCategorie', 'Valideur')->get();
+
+        $ServiceUtil = Service::select('services.*')->where('nomService', $Personnel[0]->nomService)->get();
+
+        if (isset($ServiceUtilvalideur[0])) {
+            $service_util = $ServiceUtilvalideur;
+        } else {
+            $service_util = $ServiceUtil;
+        }
+
+        $Services = Service::select('services.*')->get();
+
+        //$_SESSION['personnels'] = $Personnels;
 
         $valider = true;
 
-        return view('departements', ['valider' => $valider]);
+        return view('departements', ['valider' => $valider, 'Personnel' => $Personnel, 'commande' => $commande, 'commandes_fini' => $commande_fini, 'personnels' => $Personnels, 'services' => $Services, 'service_util' => $service_util]);
     }
 }

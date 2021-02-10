@@ -20,18 +20,26 @@ class FournituresController extends Controller
             exit;
         }
 
+        $Personnel = Personnel::donneesPersonnel()[0];
+
+        $commande = Personnel::donneesPersonnel()[1];
+
+        $commande_fini = Personnel::donneesPersonnel()[2];
+
         $Fournitures = Fournitures::join('familles_fournitures', 'fournitures.idFamille', 'familles_fournitures.id')->select('fournitures.*', 'nomFamille')->orderby('fournitures.id', 'asc')->get();
 
         $Familles = FamillesFournitures::select('*')->get();
 
-        for ($i=0; $i < $Familles->count(); $i++) {
-            $_SESSION[$Familles[$i]->nomFamille] = Fournitures::join('familles_fournitures', 'fournitures.idFamille', 'familles_fournitures.id')->where('nomFamille', $Familles[$i]->nomFamille)->select('fournitures.*', 'nomFamille')->get();
+        foreach ($Familles as $lignes => $famille) {
+            $nomFamille = $famille->nomFamille;
+            $$nomFamille = Fournitures::join('familles_fournitures', 'fournitures.idFamille', 'familles_fournitures.id')->where('nomFamille', $famille->nomFamille)->select('fournitures.*', 'nomFamille')->get();
+            $donnesFamille["$nomFamille"] = $$nomFamille;
         }
 
-        $_SESSION['famillesfournitures'] = $Familles;
-        $_SESSION['fournitures'] = $Fournitures;
+        //$_SESSION['famillesfournitures'] = $Familles;
+        //$_SESSION['fournitures'] = $Fournitures;
 
-        return view('fournitures');
+        return view('fournitures', ['Personnel' => $Personnel, 'commande' => $commande, 'commandes_fini' => $commande_fini, 'fournitures' => $Fournitures, 'famillesfournitures' => $Familles, 'donnesFamille' => $donnesFamille]);
     }
 
     public function rechercher(Request $request)
@@ -46,17 +54,33 @@ class FournituresController extends Controller
 
         $recherche = implode('%', $rechercheExplode);
 
-        $resultat = Fournitures::join('familles_fournitures', 'fournitures.idFamille', 'familles_fournitures.id')->select('fournitures.*', 'nomFamille')->where('nomFournitures', 'like', '%'.$recherche.'%')->orWhere('nomFamille', 'like', '%'.$recherche.'%')->orderby('fournitures.id', 'asc')->get();
+        $resultats = Fournitures::join('familles_fournitures', 'fournitures.idFamille', 'familles_fournitures.id')->select('fournitures.*', 'nomFamille')->where('nomFournitures', 'like', '%'.$recherche.'%')->orWhere('nomFamille', 'like', '%'.$recherche.'%')->orderby('fournitures.id', 'asc')->get();
 
-        $_SESSION['recherche'] = $resultat;
+        $Personnel = Personnel::donneesPersonnel()[0];
 
-        if (isset($_SESSION['recherche'][0])) {
+        $commande = Personnel::donneesPersonnel()[1];
+
+        $commande_fini = Personnel::donneesPersonnel()[2];
+
+        $Fournitures = Fournitures::join('familles_fournitures', 'fournitures.idFamille', 'familles_fournitures.id')->select('fournitures.*', 'nomFamille')->orderby('fournitures.id', 'asc')->get();
+
+        $Familles = FamillesFournitures::select('*')->get();
+
+        foreach ($Familles as $lignes => $famille) {
+            $nomFamille = $famille->nomFamille;
+            $$nomFamille = Fournitures::join('familles_fournitures', 'fournitures.idFamille', 'familles_fournitures.id')->where('nomFamille', $famille->nomFamille)->select('fournitures.*', 'nomFamille')->get();
+            $donnesFamille["$nomFamille"] = $$nomFamille;
+        }
+
+        //$_SESSION['recherche'] = $resultat;
+
+        if (isset($resultats[0])) {
             $reponse = true;
         } else {
             $reponse = false;
         }
 
-        return view('fournitures', ['reponse' => $reponse]);
+        return view('fournitures', ['reponse' => $reponse, 'Personnel' => $Personnel, 'commande' => $commande, 'commandes_fini' => $commande_fini, 'fournitures' => $Fournitures, 'famillesfournitures' => $Familles, 'donnesFamille' => $donnesFamille, 'resultats' => $resultats]);
     }
 
     public function creationfourniture(Request $request)

@@ -120,6 +120,7 @@ h1
     background: #2e2e57;
     color: #ffffff;
     border: none;
+    outline: none;
     width: 29.5%;
     padding: 1.6% 6% 1.5% 2%;
     border-radius: 25px;
