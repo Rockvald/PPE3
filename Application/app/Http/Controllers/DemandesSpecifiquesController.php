@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\DemandesSpecifiques;
 use App\Models\Personnel;
-use App\Models\Service;
 
 class DemandesSpecifiquesController extends Controller
 {
@@ -16,41 +15,14 @@ class DemandesSpecifiquesController extends Controller
         }
 
         if (!isset($_SESSION['mail'])) {
-            header('Refresh: 0; url=http://localhost/PPE3/Application/server.php?page=demandesspecifiques');
+            header('Refresh: 0; url='.url('?page=demandesspecifiques'));
             exit;
         }
 
-        $demandes = DemandesSpecifiques::join('etats', 'demandes_specifiques.idEtat', 'etats.id')->join('personnels', 'demandes_specifiques.idPersonnel', 'personnels.id')->select('demandes_specifiques.*', 'nomEtat', 'nom', 'prenom')->orderby('demandes_specifiques.id', 'asc')->get();
+        $donneesPersonnel = Personnel::donneesPersonnel();
+        $donneesDemandes = DemandesSpecifiques::donneesDemandes();
 
-        $demandes_pers = DemandesSpecifiques::join('etats', 'demandes_specifiques.idEtat', 'etats.id')->join('personnels', 'demandes_specifiques.idPersonnel', 'personnels.id')->select('demandes_specifiques.*', 'nomEtat', 'mail')->where('mail', $_SESSION['mail'])->orderby('demandes_specifiques.id', 'asc')->get();
-
-        $demandes_valid = DemandesSpecifiques::join('etats', 'demandes_specifiques.idEtat', 'etats.id')->join('personnels', 'demandes_specifiques.idPersonnel', 'personnels.id')->join('services', 'personnels.idService', 'services.id')->select('demandes_specifiques.*', 'nomEtat', 'nom', 'prenom', 'nomService')->where('nomService', $_SESSION['service'])->orderby('demandes_specifiques.id', 'asc')->get();
-
-        $dateActuel = date_create(date('Y-m-d'));
-        $dateMin = date_modify($dateActuel, '-1 month');
-        $demande_fini = DemandesSpecifiques::join('etats', 'demandes_specifiques.idEtat', 'etats.id')->join('personnels', 'demandes_specifiques.idPersonnel', 'personnels.id')->select('demandes_specifiques.*', 'nomEtat', 'mail')->where('etats.nomEtat', 'Livré')->where('mail', $_SESSION['mail'])->where('demandes_specifiques.updated_at', '>', $dateMin)->orWhere('etats.nomEtat', 'Annulé')->where('mail', $_SESSION['mail'])->where('demandes_specifiques.updated_at', '>', $dateMin)->orderby('demandes_specifiques.id', 'asc')->get();
-
-        /*for ($i=0; $i < $demande_fini->count(); $i++) {
-            $dateActuel = date_create(date('Y-m-d'));
-            $dateCommande = date_create(date('Y-m-d', strtotime($demande_fini[$i]->updated_at)));
-            $diff = date_diff($dateActuel, $dateCommande);
-            if ($diff->format('%a') > 14) {
-                $demande_fini = DemandesSpecifiques::join('etats', 'demandes_specifiques.idEtat', 'etats.id')->join('personnels', 'demandes_specifiques.idPersonnel', 'personnels.id')->select('demandes_specifiques.*', 'nomEtat', 'mail')->where('mail', $_SESSION['mail'])->where('etats.nomEtat', 'Livré')->orWhere('etats.nomEtat', 'Annulé')->orderby('demandes_specifiques.id', 'asc')->get();
-            }
-        }*/
-
-        $Service = Service::select('services.*')->get();
-
-        for ($j=0; $j < $Service->count(); $j++) {
-            $_SESSION[$Service[$j]->nomService] = DemandesSpecifiques::join('personnels', 'demandes_specifiques.idPersonnel', 'personnels.id')->join('services', 'personnels.idService', 'services.id')->join('etats', 'demandes_specifiques.idEtat', 'etats.id')->select('demandes_specifiques.*', 'nom', 'prenom', 'nomEtat', 'nomService')->where('nomService', $Service[$j]->nomService)->orderby('demandes_specifiques.id', 'asc')->get();
-        }
-
-        $_SESSION['services'] = $Service;
-        $_SESSION['demandes'] = $demandes;
-        $_SESSION['demandes_pers'] = $demandes_pers;
-        $_SESSION['demandes_valid'] = $demandes_valid;
-
-        return view('demandesspecifiques');
+        return view('demandesspecifiques', ['donneesPersonnel' => $donneesPersonnel, 'donneesDemandes' => $donneesDemandes]);
     }
 
     public function creation(Request $request)
@@ -74,14 +46,11 @@ class DemandesSpecifiquesController extends Controller
 
         $DemandesSpecifiques->save();
 
-        // Mise à jour des demandes personnels
-        $demandes_pers = DemandesSpecifiques::join('etats', 'demandes_specifiques.idEtat', 'etats.id')->join('personnels', 'demandes_specifiques.idPersonnel', 'personnels.id')->select('demandes_specifiques.*', 'nomEtat', 'mail')->where('mail', $_SESSION['mail'])->orderby('demandes_specifiques.id', 'asc')->get();
+        $donneesPersonnel = Personnel::donneesPersonnel();
+        $donneesDemandes = DemandesSpecifiques::donneesDemandes();
 
-        $_SESSION['demandes_pers'] = $demandes_pers;
-
-        // Renvoi d'une variable afin d'afficher un message de confirmation
         $vrai = true;
 
-        return view('demandesspecifiques', ['vrai'=>$vrai]);
+        return view('demandesspecifiques', ['vrai' => $vrai, 'donneesPersonnel' => $donneesPersonnel, 'donneesDemandes' => $donneesDemandes]);
     }
 }

@@ -4,13 +4,13 @@
 @include('header')
         <div id="bouton_imprimer"><button onclick="imprimer('corps');">Imprimer</button></div>
         <section id="corps">
-            @if ($Personnel[0]->nomCategorie == 'Administrateur')
-                @if (isset($commande_complet[0]))
+            @if ($donneesPersonnel['Personnel'][0]->nomCategorie == 'Administrateur')
+                @if (isset($donneesCommandes['commande_complet'][0]))
                     <div id="choix_departements">
                         <p id="departements">Départements :</p>
                         <select id="select_services" onchange="selectionServices('suivi')">
                             <option value="Tous">Tous</option>
-                        @foreach ($services as $lignes => $service)
+                        @foreach ($donneesCommandes['services'] as $lignes => $service)
                             @if (isset($_GET['service']) AND $_GET['service'] == $service->nomService)
                                 <option value="{{ $service->nomService }}" selected >{{ $service->nomService }}</option>
                             @else
@@ -20,7 +20,7 @@
                         </select>
                     </div>
 
-                    @foreach ($services as $lignes => $service)
+                    @foreach ($donneesCommandes['services'] as $lignes => $service)
                         @if (isset($_GET['service']) AND $_GET['service'] == $service->nomService)
                             @php ($nom = $_GET['service'])
                         @endif
@@ -28,9 +28,9 @@
                     @php ($nomService = $nom ?? '')
 
                     @if ($nomService == '')
-                        @php ($commandes = $commande_complet)
+                        @php ($commandes = $donneesCommandes['commande_complet'])
                     @else
-                        @php ($commandes = $donnesService["$nomService"])
+                        @php ($commandes = $donneesCommandes['donnesService']["$nomService"])
                     @endif
 
                     @php ($envoye = $envoyer ?? false)
@@ -105,12 +105,12 @@
                     </section>
                 @endif
             @else
-                @if (isset($commande_utilisateur[0]))
+                @if (isset($donneesCommandes['commande_utilisateur'][0]))
                     <div id="choix_etat">
                         <p id="etats">États :</p>
                         <select id="select_etat" onchange="selectionEtat('suivi')">
                             <option value="Tous">Tous</option>
-                        @foreach ($etats as $lignes => $etat)
+                        @foreach ($donneesCommandes['etats'] as $lignes => $etat)
                             @if (isset($_GET['etat']) AND $_GET['etat'] == $etat->nomEtat)
                                 <option value="{{ $etat->nomEtat }}" selected >{{ $etat->nomEtat }}</option>
                             @else
@@ -120,7 +120,7 @@
                         </select>
                     </div>
 
-                    @foreach ($etats as $lignes => $etat)
+                    @foreach ($donneesCommandes['etats'] as $lignes => $etat)
                         @if (isset($_GET['etat']) AND $_GET['etat'] == $etat->nomEtat)
                             @php ($nom = $_GET['etat'])
                         @endif
@@ -128,9 +128,9 @@
                     @php ($nomEtat = $nom ?? '')
 
                     @if ($nomEtat == '')
-                        @php ($commandes = $commande_utilisateur)
+                        @php ($commandes = $donneesCommandes['commande_utilisateur'])
                     @else
-                        @php ($commandes = $donnesEtat["$nomEtat"])
+                        @php ($commandes = $donneesCommandes['donnesEtat']["$nomEtat"])
                     @endif
 
                     @php ($envoye = $envoyer ?? false)
@@ -172,8 +172,8 @@
                     </section>
                 @endif
 
-                @if ($Personnel[0]->nomCategorie == 'Valideur')
-                    @if (isset($commande_valid[0]))
+                @if ($donneesPersonnel['Personnel'][0]->nomCategorie == 'Valideur')
+                    @if (isset($donneesCommandes['commande_valid'][0]))
                         <table id="liste_commandes_valid">
                             <caption>Liste des commandes des utilisateurs</caption>
                             <tr>
@@ -185,7 +185,7 @@
                                 <th>Création</th>
                                 <th>Dernière mise à jour</th>
                                 <th>
-                                @foreach ($commande_valid as $lignes => $commande)
+                                @foreach ($donneesCommandes['commande_valid'] as $lignes => $commande)
                                     @if (($commande->nomEtat == 'Prise en compte') AND !isset($afficher))
                                         {{ 'Modifier l\'état' }}
                                         @php ($afficher = true)
@@ -193,7 +193,7 @@
                                 @endforeach
                                 </th>
                             </tr>
-                            @foreach ($commande_valid as $lignes => $commande)
+                            @foreach ($donneesCommandes['commande_valid'] as $lignes => $commande)
                                 <tr>
                                     <td>{{ $commande->nom }}</td>
                                     <td>{{ $commande->prenom }}</td>

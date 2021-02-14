@@ -16,19 +16,19 @@ class FamillesFournituresController extends Controller
         }
 
         if (!isset($_SESSION['mail'])) {
-            header('Refresh: 0; url=http://localhost/PPE3/Application/server.php?page=famillesfournitures');
+            header('Refresh: 0; url='.url('?page=famillesfournitures'));
             exit;
         }
 
-        $FamillesFournitures = FamillesFournitures::select('*')->get();
+        $donneesAccueil = Personnel::donneesAccueil();
+        $donneesPersonnel = Personnel::donneesPersonnel();
+        $famillesFournitures = FamillesFournitures::listeFamilles();
 
-        $_SESSION['famillesfournitures'] = $FamillesFournitures;
-
-        if ($_SESSION['categorie'] != 'Administrateur') {
+        if ($donneesPersonnel['Personnel'][0]->nomCategorie != 'Administrateur') {
             $droitinsuf = true;
-            return view('accueil', ['droitinsuf' => $droitinsuf]);
+            return view('accueil', ['droitinsuf' => $droitinsuf, 'donneesAccueil' => $donneesAccueil, 'donneesPersonnel' => $donneesPersonnel]);
         } else {
-            return view('famillesfournitures');
+            return view('famillesfournitures', ['donneesPersonnel' => $donneesPersonnel, 'famillesFournitures' => $famillesFournitures]);
         }
     }
 
@@ -46,13 +46,12 @@ class FamillesFournituresController extends Controller
         $CreationFamillesFournitures->descriptionFamille = $request->description_famille;
         $CreationFamillesFournitures->save();
 
-        $FamillesFournitures = FamillesFournitures::select('*')->get();
-
-        $_SESSION['famillesfournitures'] = $FamillesFournitures;
+        $donneesPersonnel = Personnel::donneesPersonnel();
+        $famillesFournitures = FamillesFournitures::listeFamilles();
 
         $cree = true;
 
-        return view('famillesfournitures', ['cree' => $cree]);
+        return view('famillesfournitures', ['cree' => $cree, 'donneesPersonnel' => $donneesPersonnel, 'famillesFournitures' => $famillesFournitures]);
     }
 
     public function modificationfamille(Request $request)
@@ -66,14 +65,13 @@ class FamillesFournituresController extends Controller
 
         $idFamille = FamillesFournitures::select('id')->where('nomFamille', $request->nom_famille)->get();
 
-        $majFamilleFournitures = Fournitures::where('id', $request->id)->update(['idFamille' => $idFamille[0]->id]);
+        Fournitures::where('id', $request->id)->update(['idFamille' => $idFamille[0]->id]);
 
-        $Fournitures = Fournitures::join('familles_fournitures', 'fournitures.idFamille', 'familles_fournitures.id')->select('fournitures.*', 'nomFamille')->orderby('fournitures.id', 'asc')->get();
-
-        $_SESSION['fournitures'] = $Fournitures;
+        $donneesPersonnel = Personnel::donneesPersonnel();
+        $donneesFourniture = Fournitures::donneesFourniture();
 
         $valider = true;
 
-        return view('fournitures', ['valider' => $valider]);
+        return view('fournitures', ['valider' => $valider, 'donneesPersonnel' => $donneesPersonnel, 'donneesFourniture' => $donneesFourniture]);
     }
 }

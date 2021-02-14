@@ -2,11 +2,11 @@
 @include('head')
 @include('menus')
 @include('header')
-        @if ($_SESSION['categorie'] == 'Administrateur')
+        @if ($donneesPersonnel['Personnel'][0]->nomCategorie == 'Administrateur')
             <div id="bouton_imprimer"><button onclick="imprimer('corps');">Imprimer</button></div>
         @endif
         <section id="corps">
-            @if ($_SESSION['categorie'] != 'Administrateur')
+            @if ($donneesPersonnel['Personnel'][0]->nomCategorie != 'Administrateur')
                 @php ($confirm = $vrai ?? false)
                 @if ($confirm)
                     <p class="confirm"><img class="img_confirm" src="{{ asset('storage/app/public/confirm.png') }}" alt="Icon de confirmation" /> Votre demande a bien été envoyée</p><br />
@@ -30,8 +30,8 @@
                 {{ Form::submit('Envoyer la demande') }}
                 {!! Form::close() !!}
 
-                @if ($_SESSION['categorie'] == 'Valideur')
-                    @if (isset($_SESSION['demandes_valid'][0]))
+                @if ($donneesPersonnel['Personnel'][0]->nomCategorie == 'Valideur')
+                    @if (isset($donneesDemandes['demandes_valid'][0]))
                         <table id="tab_ut">
                             <caption class="titre_demande">Liste des demandes des utilisateurs</caption>
                             <tr>
@@ -44,7 +44,7 @@
                                 <th>Création</th>
                                 <th>Dernière mise à jour</th>
                                 <th>
-                                @foreach ($_SESSION['demandes_valid'] as $lignes => $demandes_valid)
+                                @foreach ($donneesDemandes['demandes_valid'] as $lignes => $demandes_valid)
                                     @if (($demandes_valid->nomEtat == 'Prise en compte') AND !isset($afficher))
                                         {{ 'Modifier l\'état' }}
                                         @php ($afficher = true)
@@ -52,7 +52,7 @@
                                 @endforeach
                                 </th>
                             </tr>
-                            @foreach ($_SESSION['demandes_valid'] as $lignes => $demandes_valid)
+                            @foreach ($donneesDemandes['demandes_valid'] as $lignes => $demandes_valid)
                                 <tr>
                                     <td>{{ $demandes_valid->nom }}</td>
                                     <td>{{ $demandes_valid->prenom }}</td>
@@ -87,7 +87,7 @@
                         </section>
                     @endif
                 @endif
-                @if (isset($_SESSION['demandes_pers'][0]))
+                @if (isset($donneesDemandes['demandes_pers'][0]))
                     <table id="demandes_pers">
                         <caption class="titre_demande">Liste des demandes effectuées :</caption>
                         <tr>
@@ -98,7 +98,7 @@
                             <th>Création</th>
                             <th>Dernière mise à jour</th>
                         </tr>
-                    @foreach ($_SESSION['demandes_pers'] as $lignes => $demandes_pers)
+                    @foreach ($donneesDemandes['demandes_pers'] as $lignes => $demandes_pers)
                         <tr>
                             <td>{{ $demandes_pers->nomDemande }}</td>
                             <td>{{ $demandes_pers->quantiteDemande }}</td>
@@ -122,12 +122,12 @@
                     </section>
                 @endif
             @else
-                @if (isset($_SESSION['demandes'][0]))
+                @if (isset($donneesDemandes['demandes'][0]))
                     <div id="choix_departements">
                         <p id="departements">Départements :</p>
                         <select id="select_services" onchange="selectionServices('demandesspecifiques')">
                             <option value="Tous">Tous</option>
-                        @foreach ($_SESSION['services'] as $lignes => $service)
+                        @foreach ($donneesDemandes['services'] as $lignes => $service)
                             @if (isset($_GET['service']) AND $_GET['service'] == $service->nomService)
                                 <option value="{{ $service->nomService }}" selected >{{ $service->nomService }}</option>
                             @else
@@ -137,12 +137,18 @@
                         </select>
                     </div>
 
-                    @foreach ($_SESSION['services'] as $lignes => $service)
+                    @foreach ($donneesDemandes['services'] as $lignes => $service)
                         @if (isset($_GET['service']) AND $_GET['service'] == $service->nomService)
                             @php ($nom = $_GET['service'])
                         @endif
                     @endforeach
-                    @php ($nomService = $nom ?? 'demandes')
+                    @php ($demandes = $nom ?? '')
+
+                    @if ($demandes == '')
+                        @php ($liste_demandes = $donneesDemandes['demandes'])
+                    @else
+                        @php ($liste_demandes = $donneesDemandes['donnesService']["$demandes"])
+                    @endif
 
                     @php ($envoye = $envoyer ?? false)
                     @if ($envoye)
@@ -150,7 +156,7 @@
                         @php (header('Refresh: 5; url=demandesspecifiques'))
                     @endif
 
-                    @if (isset($_SESSION["$nomService"][0]))
+                    @if (isset($liste_demandes[0]))
                         <table id="demandes_list">
                             <caption>Liste des demandes spécifiques</caption>
                             <tr>
@@ -163,7 +169,7 @@
                                 <th>Création</th>
                                 <th>Dernière mise à jour</th>
                                 <th>
-                                @foreach ($_SESSION["$nomService"] as $lignes => $nomservice)
+                                @foreach ($liste_demandes as $lignes => $nomservice)
                                     @if (($nomservice->nomEtat == 'Validé' OR $nomservice->nomEtat == 'En cours') AND !isset($afficher))
                                         {{ 'Modifier l\'état' }}
                                         @php ($afficher = true)
@@ -171,7 +177,7 @@
                                 @endforeach
                                 </th>
                             </tr>
-                        @foreach ($_SESSION["$nomService"] as $lignes => $nomservice)
+                        @foreach ($liste_demandes as $lignes => $nomservice)
                             <tr>
                                 <td>{{ $nomservice->nom }}</td>
                                 <td>{{ $nomservice->prenom }}</td>

@@ -1,5 +1,5 @@
         <footer>
-            @if (isset($commandes_fini[0]))
+            @if (isset($donneesPersonnel['commandes_fini'][0]))
                 <table id="commandes_fini">
                     <caption>Historique des commandes</caption>
                     <tr>
@@ -8,7 +8,7 @@
                         <th class="tabl_comm">État</th>
                         <th class="tabl_comm">Dernière mise à jour</th>
                     </tr>
-                @foreach ($commandes_fini as $lignes => $commande_enFini)
+                @foreach ($donneesPersonnel['commandes_fini'] as $lignes => $commande_enFini)
                     <tr>
                         <td class="tabl_comm">{{ $commande_enFini->nomCommandes }}</td>
                         <td class="tabl_comm">{{ $commande_enFini->quantiteDemande }}</td>
@@ -18,8 +18,8 @@
                 @endforeach
                 </table>
             @endif
-            <p id="service">Vous êtes dans le service : {{ $Personnel[0]->nomService }}</p>
-            <p id="categorie">Votre rôle est : {{ $Personnel[0]->nomCategorie }}</p>
+            <p id="service">Vous êtes dans le service : {{ $donneesPersonnel['Personnel'][0]->nomService }}</p>
+            <p id="categorie">Votre rôle est : {{ $donneesPersonnel['Personnel'][0]->nomCategorie }}</p>
         </footer>
     </body>
 </html>

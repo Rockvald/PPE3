@@ -34,7 +34,7 @@
                     <th>Nom</th>
                     <th>Description</th>
                 </tr>
-                @foreach ($_SESSION['famillesfournitures'] as $lignes => $famillefourniture)
+                @foreach ($famillesFournitures as $lignes => $famillefourniture)
                     <tr>
                         <td>{{ $famillefourniture->nomFamille }}</td>
                         <td>{{ $famillefourniture->descriptionFamille }}</td>

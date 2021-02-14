@@ -4,12 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Personnel;
-use App\Models\Fournitures;
-use App\Models\Categorie;
-use App\Models\Commandes;
-use App\Models\Etat;
 use App\Models\Service;
-use App\Models\DemandesSpecifiques;
 
 class PersonnelController extends Controller
 {
@@ -17,7 +12,7 @@ class PersonnelController extends Controller
     {
         $Services = Service::select('services.*')->orderby('id', 'asc')->get();
 
-        return view('inscription', ['Services'=>$Services]);
+        return view('inscription', ['Services' => $Services]);
     }
 
     public function verif_creer(Request $request)
@@ -60,51 +55,15 @@ class PersonnelController extends Controller
         if ($Personnel->isEmpty())
         {
             $erreur = 'mail';
-            return view('connexion', ['erreur'=>$erreur]);
+            return view('connexion', ['erreur' => $erreur, 'page' => $request->page]);
         }
         elseif (!password_verify($request->mdp, $Personnel[0]->pass))
         {
             $erreur = 'mdp';
-            return view('connexion', ['erreur'=>$erreur, 'mail'=>$request->email]);
+            return view('connexion', ['erreur' => $erreur, 'mail' => $request->email, 'page' => $request->page]);
         }
         elseif ($request->email == $Personnel[0]->mail AND password_verify($request->mdp, $Personnel[0]->pass))
         {
-            /*$dateActuel = date_create(date('Y-m-d'));
-            $dateMin = date_modify($dateActuel, '-1 month');
-            $commande_fini = Commandes::join('personnels', 'commandes.idPersonnel', 'personnels.id')->join('etats', 'commandes.idEtat', 'etats.id')->select('commandes.id', 'nomCommandes', 'quantiteDemande', 'commandes.updated_at', 'personnels.mail', 'etats.nomEtat')->where('commandes.updated_at', '>', $dateMin)->where('personnels.mail', $_SESSION['mail'])->where('etats.nomEtat', 'Livré')->orWhere('etats.nomEtat', 'Annulé')->where('commandes.updated_at', '>', $dateMin)->where('personnels.mail', $_SESSION['mail'])->orderby('commandes.id', 'asc')->get();*/
-
-            /*for ($i=0; $i < $commande_fini->count(); $i++) {
-                $dateActuel = date_create(date('Y-m-d'));
-                $dateCommande = date_create(date('Y-m-d', strtotime($commande_fini[$i]->updated_at)));
-                $diff = date_diff($dateActuel, $dateCommande);
-                if ($diff->format('%a') > 14) {
-                    $commande_fini = Commandes::join('personnels', 'commandes.idPersonnel', 'personnels.id')->join('etats', 'commandes.idEtat', 'etats.id')->select('commandes.id', 'nomCommandes', 'quantiteDemande', 'commandes.updated_at', 'personnels.mail', 'etats.nomEtat')->where('personnels.mail', $_SESSION['mail'])->where('etats.nomEtat', 'Livré')->orWhere('etats.nomEtat', 'Annulé')->orderby('commandes.id', 'asc')->get();
-                }
-            }*/
-
-            /*$commande = Commandes::join('personnels', 'commandes.idPersonnel', 'personnels.id')->join('etats', 'commandes.idEtat', 'etats.id')->select('commandes.id', 'nomCommandes', 'quantiteDemande', 'commandes.updated_at', 'personnels.mail', 'etats.nomEtat')->where('personnels.mail', $_SESSION['mail'])->where('etats.nomEtat', 'En cours')->orderby('commandes.id', 'asc')->get();
-
-            $commande_liste = Commandes::join('personnels', 'commandes.idPersonnel', 'personnels.id')->join('etats', 'commandes.idEtat', 'etats.id')->select('commandes.id', 'nomCommandes', 'quantiteDemande', 'commandes.created_at', 'commandes.updated_at', 'personnels.nom', 'personnels.prenom', 'etats.nomEtat')->where('etats.nomEtat', 'En cours')->orderby('commandes.updated_at', 'asc')->get();
-
-            $Personnels = Personnel::join('services', 'personnels.idService', 'services.id')->join('categories', 'personnels.idCategorie', 'categories.id')->select('*')->orderby('personnels.id', 'asc')->get();
-
-            $Fournitures = Fournitures::join('familles_fournitures', 'fournitures.idFamille', 'familles_fournitures.id')->select('fournitures.*', 'nomFamille')->orderby('fournitures.id', 'asc')->get();*/
-
-            /*session_start();
-
-            $_SESSION['nom'] = $Personnel[0]->nom;
-            $_SESSION['prenom'] = $Personnel[0]->prenom;
-            $_SESSION['mail'] = $_SESSION['mail'];
-            $_SESSION['pass'] = $Personnel[0]->pass;
-            $_SESSION['categorie'] = $Personnel[0]->nomCategorie;
-            $_SESSION['service'] = $Personnel[0]->nomService;
-            $_SESSION['message'] = $Personnel[0]->message;
-            $_SESSION['commandes'] = $commande;
-            $_SESSION['commandes_fini'] = $commande_fini;
-            $_SESSION['commandes_liste'] = $commande_liste;
-            $_SESSION['personnels'] = $Personnels;
-            $_SESSION['fournitures'] = $Fournitures;*/
-
             session_start();
 
             $_SESSION['mail'] = $request->email;
@@ -129,7 +88,7 @@ class PersonnelController extends Controller
 
         $deconnexion = true;
 
-        return view('connexion', ['deconnexion'=>$deconnexion]);
+        return view('connexion', ['deconnexion' => $deconnexion]);
     }
 
     public function afficher()
@@ -138,19 +97,10 @@ class PersonnelController extends Controller
             session_start();
         }
 
-        $Personnel = Personnel::donneesPersonnel()[0];
+        $donneesPersonnel = Personnel::donneesPersonnel();
+        $donneesAccueil = Personnel::donneesAccueil();
 
-        $commande = Personnel::donneesPersonnel()[1];
-
-        $commande_fini = Personnel::donneesPersonnel()[2];
-
-        $commande_liste = Commandes::join('personnels', 'commandes.idPersonnel', 'personnels.id')->join('etats', 'commandes.idEtat', 'etats.id')->select('commandes.id', 'nomCommandes', 'quantiteDemande', 'commandes.created_at', 'commandes.updated_at', 'personnels.nom', 'personnels.prenom', 'etats.nomEtat')->where('etats.nomEtat', 'En cours')->orderby('commandes.updated_at', 'asc')->get();
-
-        $Personnels = Personnel::join('services', 'personnels.idService', 'services.id')->join('categories', 'personnels.idCategorie', 'categories.id')->select('*')->orderby('personnels.id', 'asc')->get();
-
-        $Fournitures = Fournitures::join('familles_fournitures', 'fournitures.idFamille', 'familles_fournitures.id')->select('fournitures.*', 'nomFamille')->orderby('fournitures.id', 'asc')->get();
-
-        return view('accueil', ['Personnel' => $Personnel, 'commande' => $commande, 'commandes_liste' => $commande_liste, 'commandes_fini' => $commande_fini, 'Personnels' => $Personnels, 'Fournitures' => $Fournitures]);
+        return view('accueil', ['donneesAccueil' => $donneesAccueil, 'donneesPersonnel' => $donneesPersonnel]);
     }
 
     public function message(Request $request)
@@ -168,16 +118,12 @@ class PersonnelController extends Controller
 
         session_start();
 
-        $Personnel = Personnel::where('mail', $_SESSION['mail'])->get();
-
-        $Personnels = Personnel::join('services', 'personnels.idService', 'services.id')->join('categories', 'personnels.idCategorie', 'categories.id')->select('*')->orderby('personnels.id', 'asc')->get();
-
-        $_SESSION['message'] = $Personnel[0]->message;
-        $_SESSION['personnels'] = $Personnels;
+        $donneesPersonnel = Personnel::donneesPersonnel();
+        $donneesAccueil = Personnel::donneesAccueil();
 
         $vrai = true;
 
-        return view('accueil', ['vrai'=>$vrai]);
+        return view('accueil', ['vrai' => $vrai, 'donneesAccueil' => $donneesAccueil, 'donneesPersonnel' => $donneesPersonnel]);
     }
 
     public function supprimer(Request $request)
@@ -190,16 +136,12 @@ class PersonnelController extends Controller
 
         session_start();
 
-        $Personnel = Personnel::where('mail', $_SESSION['mail'])->get();
-
-        $Personnels = Personnel::join('services', 'personnels.idService', 'services.id')->join('categories', 'personnels.idCategorie', 'categories.id')->select('*')->orderby('personnels.id', 'asc')->get();
-
-        $_SESSION['message'] = $Personnel[0]->message;
-        $_SESSION['personnels'] = $Personnels;
+        $donneesPersonnel = Personnel::donneesPersonnel();
+        $donneesAccueil = Personnel::donneesAccueil();
 
         $suppr = true;
 
-        return view('accueil', ['suppr'=>$suppr]);
+        return view('accueil', ['suppr' => $suppr, 'donneesAccueil' => $donneesAccueil, 'donneesPersonnel' => $donneesPersonnel]);
     }
 
     public function suppressionmessages()
@@ -208,16 +150,12 @@ class PersonnelController extends Controller
 
         session_start();
 
-        $Personnel = Personnel::where('mail', $_SESSION['mail'])->get();
-
-        $Personnels = Personnel::join('services', 'personnels.idService', 'services.id')->join('categories', 'personnels.idCategorie', 'categories.id')->select('*')->orderby('personnels.id', 'asc')->get();
-
-        $_SESSION['message'] = $Personnel[0]->message;
-        $_SESSION['personnels'] = $Personnels;
+        $donneesPersonnel = Personnel::donneesPersonnel();
+        $donneesAccueil = Personnel::donneesAccueil();
 
         $supprtous = true;
 
-        return view('accueil', ['supprtous'=>$supprtous]);
+        return view('accueil', ['supprtous' => $supprtous, 'donneesAccueil' => $donneesAccueil, 'donneesPersonnel' => $donneesPersonnel]);
     }
 
     public function modificationlogo(Request $request)
@@ -228,11 +166,14 @@ class PersonnelController extends Controller
 
         session_start();
 
+        $donneesPersonnel = Personnel::donneesPersonnel();
+        $donneesAccueil = Personnel::donneesAccueil();
+
         if ($request->file('photo_logo')->getsize() > 500000) {
 
             $tropgros = true;
 
-            return view('accueil', ['tropgros' => $tropgros]);
+            return view('accueil', ['tropgros' => $tropgros, 'donneesAccueil' => $donneesAccueil, 'donneesPersonnel' => $donneesPersonnel]);
         }
 
         $fichierTelecharger = $request->file('photo_logo');
@@ -253,7 +194,7 @@ class PersonnelController extends Controller
                 break;
             default:
                 $invalide = true;
-                return view('accueil', ['invalide' => $invalide]);
+                return view('accueil', ['invalide' => $invalide, 'donneesAccueil' => $donneesAccueil, 'donneesPersonnel' => $donneesPersonnel]);
                 break;
         }
 
@@ -263,7 +204,7 @@ class PersonnelController extends Controller
 
         $modif = true;
 
-        return view('accueil', ['modif' => $modif]);
+        return view('accueil', ['modif' => $modif, 'donneesAccueil' => $donneesAccueil, 'donneesPersonnel' => $donneesPersonnel]);
     }
 
     public function suppressionlogo()
@@ -272,9 +213,12 @@ class PersonnelController extends Controller
 
         unlink('/var/www/html/PPE3/Application/storage/app/public/logo-cci.png');
 
+        $donneesPersonnel = Personnel::donneesPersonnel();
+        $donneesAccueil = Personnel::donneesAccueil();
+
         $supprlogo = true;
 
-        return view('accueil', ['supprlogo' => $supprlogo]);
+        return view('accueil', ['supprlogo' => $supprlogo, 'donneesAccueil' => $donneesAccueil, 'donneesPersonnel' => $donneesPersonnel]);
     }
 
     public function messagerie()
@@ -284,15 +228,18 @@ class PersonnelController extends Controller
         }
 
         if (!isset($_SESSION['mail'])) {
-            header('Refresh: 0; url=http://localhost/PPE3/Application/server.php?page=messagerie');
+            header('Refresh: 0; url='.url('?page=messagerie'));
             exit;
         }
 
-        if ($_SESSION['categorie'] != 'Administrateur') {
+        $donneesPersonnel = Personnel::donneesPersonnel();
+        $donneesAccueil = Personnel::donneesAccueil();
+
+        if ($donneesPersonnel['Personnel'][0]->nomCategorie != 'Administrateur') {
             $droitinsuf = true;
-            return view('accueil', ['droitinsuf' => $droitinsuf]);
+            return view('accueil', ['droitinsuf' => $droitinsuf, 'donneesAccueil' => $donneesAccueil, 'donneesPersonnel' => $donneesPersonnel]);
         } else {
-            return view('messagerie');
+            return view('messagerie', ['donneesAccueil' => $donneesAccueil, 'donneesPersonnel' => $donneesPersonnel]);
         }
     }
 
@@ -303,15 +250,18 @@ class PersonnelController extends Controller
         }
 
         if (!isset($_SESSION['mail'])) {
-            header('Refresh: 0; url=http://localhost/PPE3/Application/server.php?page=statistique');
+            header('Refresh: 0; url='.url('?page=statistique'));
             exit;
         }
 
-        if ($_SESSION['categorie'] != 'Administrateur') {
+        $donneesPersonnel = Personnel::donneesPersonnel();
+        $donneesAccueil = Personnel::donneesAccueil();
+
+        if ($donneesPersonnel['Personnel'][0]->nomCategorie != 'Administrateur') {
             $droitinsuf = true;
-            return view('accueil', ['droitinsuf' => $droitinsuf]);
+            return view('accueil', ['droitinsuf' => $droitinsuf, 'donneesAccueil' => $donneesAccueil, 'donneesPersonnel' => $donneesPersonnel]);
         } else {
-            return view('statistique');
+            return view('statistique', ['donneesAccueil' => $donneesAccueil, 'donneesPersonnel' => $donneesPersonnel]);
         }
     }
 
@@ -322,16 +272,13 @@ class PersonnelController extends Controller
         }
 
         if (!isset($_SESSION['mail'])) {
-            header('Refresh: 0; url=http://localhost/PPE3/Application/server.php?page=personnalisationducompte');
+            header('Refresh: 0; url='.url('?page=personnalisationducompte'));
             exit;
         }
 
-        $Personnel = Personnel::donneesPersonnel()[0];
+        $donneesPersonnel = Personnel::donneesPersonnel();
+        $donneesAccueil = Personnel::donneesAccueil();
 
-        $commande = Personnel::donneesPersonnel()[1];
-
-        $commande_fini = Personnel::donneesPersonnel()[2];
-
-        return view('personnalisationducompte', ['Personnel' => $Personnel, 'commande' => $commande, 'commandes_fini' => $commande_fini]);
+        return view('personnalisationducompte', ['donneesAccueil' => $donneesAccueil, 'donneesPersonnel' => $donneesPersonnel]);
     }
 }

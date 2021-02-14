@@ -3,7 +3,7 @@
 @include('menus')
 @include('header')
         <section id="corps">
-            @if ($Personnel[0]->nomCategorie == 'Administrateur')
+            @if ($donneesPersonnel['Personnel'][0]->nomCategorie == 'Administrateur')
                 @php ($creation = $cree ?? false)
                 @if ($creation)
                     <p class="confirm"><img class="img_confirm" src="{{ asset('storage/app/public/confirm.png') }}" alt="Icon de confirmation" /> Le département a bien été créé</p><br />
@@ -54,7 +54,7 @@
                         <th>Contact du valideur</th>
                         <th></th>
                     </tr>
-                    @foreach ($services as $lignes => $service)
+                    @foreach ($donneesService['services'] as $lignes => $service)
                         <tr>
                             <td>{{ $service->nomService }}</td>
                             <td>{{ $service->descriptionService }}</td>
@@ -62,7 +62,7 @@
                                 {!! Form::open(['url' => 'modificationvalideur']) !!}
                                 <select name="nom_prenom">
                                     <option value="Aucun">Aucun</option>
-                                    @foreach ($personnels as $lignes => $personnel)
+                                    @foreach ($donneesService['personnels'] as $lignes => $personnel)
                                         @if ($personnel->nomService == $service->nomService)
                                             @if ($personnel->nomCategorie == 'Valideur')
                                                 <option value="{{ $personnel->nom }} {{ $personnel->prenom }}" selected >{{ $personnel->nom }} {{ $personnel->prenom }}</option>
@@ -74,7 +74,7 @@
                                 </select>
                             </td>
                             <td>
-                                @foreach ($personnels as $lignes => $personnel)
+                                @foreach ($donneesService['personnels'] as $lignes => $personnel)
                                     @if ($personnel->nomService == $service->nomService AND $personnel->nomCategorie == 'Valideur')
                                         {{ $personnel->mail }}
                                         {{ Form::hidden('mail_ancien_valideur', $personnel->mail) }}
@@ -98,16 +98,16 @@
                     <th>Contact du valideur</th>
                 </tr>
                 <tr>
-                    <td>{{ $service_util[0]->nomService }}</td>
-                    <td>{{ $service_util[0]->descriptionService }}</td>
+                    <td>{{ $donneesService['service_util'][0]->nomService }}</td>
+                    <td>{{ $donneesService['service_util'][0]->descriptionService }}</td>
                     <td>
-                        @if (isset($service_util[0]->nom))
-                            @php ($nom_prenom = $service_util[0]->nom.' '.$service_util[0]->prenom)
+                        @if (isset($donneesService['service_util'][0]->nom))
+                            @php ($nom_prenom = $donneesService['service_util'][0]->nom.' '.$donneesService['service_util'][0]->prenom)
                         @endif
                         {{ $nom_prenom ?? 'Aucun' }}
                     </td>
                     <td>
-                        @php ($mail = $service_util[0]->mail ?? 'N/A')
+                        @php ($mail = $donneesService['service_util'][0]->mail ?? 'N/A')
                         {{ $mail }}
                     </td>
                 </tr>

@@ -14,7 +14,7 @@
                             <th class="tabl_fourn">Description</th>
                             <th class="tabl_fourn">Famille</th>
                             <th class="tabl_fourn">Quantitée disponible</th>
-                        @if ($Personnel[0]->nomCategorie != 'Administrateur')
+                        @if ($donneesPersonnel['Personnel'][0]->nomCategorie != 'Administrateur')
                             <th class="tabl_fourn">Quantitée demandée</th>
                         @endif
                         </tr>
@@ -24,11 +24,11 @@
                             <td>{{ $resultat->nomFournitures }}</td>
                             <td>{{ $resultat->descriptionFournitures }}</td>
                             <td>
-                                @if ($Personnel[0]->nomCategorie == 'Administrateur')
+                                @if ($donneesPersonnel['Personnel'][0]->nomCategorie == 'Administrateur')
                                     {!! Form::open(['url' => 'modificationfamille']) !!}
                                     {{ Form::hidden('id', $resultat->id) }}
                                     <select name="nom_famille">
-                                        @foreach ($famillesfournitures as $lignes => $famille)
+                                        @foreach ($donneesFourniture['famillesfournitures'] as $lignes => $famille)
                                             @if ($famille->nomFamille == $resultat->nomFamille)
                                                 <option value="{{ $famille->nomFamille }}" selected >{{ $famille->nomFamille }}</option>
                                             @else
@@ -43,7 +43,7 @@
                                 @endif
                             </td>
                             <td>
-                            @if ($Personnel[0]->nomCategorie == 'Administrateur')
+                            @if ($donneesPersonnel['Personnel'][0]->nomCategorie == 'Administrateur')
                                 {!! Form::open(['url' => 'majquantite']) !!}
                                 {{ Form::hidden('id', $resultat->id) }}
                                 {{ Form::number('quantite_disponible', $resultat->quantiteDisponible, ['min'=>'0', 'max'=>'100']) }}
@@ -53,7 +53,7 @@
                                 {{ $resultat->quantiteDisponible }}
                             @endif
                             </td>
-                        @if ($Personnel[0]->nomCategorie != 'Administrateur')
+                        @if ($donneesPersonnel['Personnel'][0]->nomCategorie != 'Administrateur')
                             <td>
                                 {!! Form::open(['url' => 'commander']) !!}
                                 {{ Form::hidden('id', $resultat->id) }}
@@ -98,7 +98,7 @@
                     @php (header('Refresh: 5; url=fournitures'))
                 @endif
 
-                @if ($Personnel[0]->nomCategorie == 'Administrateur')
+                @if ($donneesPersonnel['Personnel'][0]->nomCategorie == 'Administrateur')
                     <table id="ajout_fourniture">
                         <caption>Ajouter une fourniture</caption>
                         <tr>
@@ -117,7 +117,7 @@
                             <td>{{ Form::text('description_fourniture', $value = $requete->description_fourniture ?? null, ['maxlength'=>'50', 'required']) }}</td>
                             <td>
                                 <select name="nom_famille">
-                                    @foreach ($famillesfournitures as $lignes => $famille)
+                                    @foreach ($donneesFourniture['famillesfournitures'] as $lignes => $famille)
                                         <option value="{{ $famille->nomFamille }}" >{{ $famille->nomFamille }}</option>
                                     @endforeach
                                 </select>
@@ -135,7 +135,7 @@
                     <p id="familles">Familles :</p>
                     <select id="select_familles" onchange="selectionFamilles('fournitures')">
                         <option value="Toutes">Toutes</option>
-                    @foreach ($famillesfournitures as $lignes => $famille)
+                    @foreach ($donneesFourniture['famillesfournitures'] as $lignes => $famille)
                         @if (isset($_GET['famille']) AND $_GET['famille'] == $famille->nomFamille)
                             <option value="{{ $famille->nomFamille }}" selected >{{ $famille->nomFamille }}</option>
                         @else
@@ -145,7 +145,7 @@
                     </select>
                 </div>
 
-                @foreach ($famillesfournitures as $lignes => $famille)
+                @foreach ($donneesFourniture['famillesfournitures'] as $lignes => $famille)
                     @if (isset($_GET['famille']) AND $_GET['famille'] == $famille->nomFamille)
                         @php ($nom = $_GET['famille'])
                     @endif
@@ -153,9 +153,9 @@
                 @php ($fourniture = $nom ?? '')
 
                 @if ($fourniture == '')
-                    @php ($liste_fournitures = $fournitures)
+                    @php ($liste_fournitures = $donneesFourniture['fournitures'])
                 @else
-                    @php ($liste_fournitures = $donnesFamille["$fourniture"])
+                    @php ($liste_fournitures = $donneesFourniture['donnesFamille']["$fourniture"])
                 @endif
 
                 @if (isset($liste_fournitures[0]))
@@ -167,7 +167,7 @@
                             <th class="tabl_fourn">Description</th>
                             <th class="tabl_fourn">Famille</th>
                             <th class="tabl_fourn">Quantitée disponible</th>
-                        @if ($Personnel[0]->nomCategorie != 'Administrateur')
+                        @if ($donneesPersonnel['Personnel'][0]->nomCategorie != 'Administrateur')
                             <th class="tabl_fourn">Quantitée demandée</th>
                         @endif
                         </tr>
@@ -177,11 +177,11 @@
                             <td>{{ $fourniture->nomFournitures }}</td>
                             <td>{{ $fourniture->descriptionFournitures }}</td>
                             <td>
-                                @if ($Personnel[0]->nomCategorie == 'Administrateur')
+                                @if ($donneesPersonnel['Personnel'][0]->nomCategorie == 'Administrateur')
                                     {!! Form::open(['url' => 'modificationfamille']) !!}
                                     {{ Form::hidden('id', $fourniture->id) }}
                                     <select name="nom_famille">
-                                        @foreach ($famillesfournitures as $lignes => $famille)
+                                        @foreach ($donneesFourniture['famillesfournitures'] as $lignes => $famille)
                                             @if ($famille->nomFamille == $fourniture->nomFamille)
                                                 <option value="{{ $famille->nomFamille }}" selected >{{ $famille->nomFamille }}</option>
                                             @else
@@ -196,7 +196,7 @@
                                 @endif
                             </td>
                             <td>
-                            @if ($Personnel[0]->nomCategorie == 'Administrateur')
+                            @if ($donneesPersonnel['Personnel'][0]->nomCategorie == 'Administrateur')
                                 {!! Form::open(['url' => 'majquantite']) !!}
                                 {{ Form::hidden('id', $fourniture->id) }}
                                 {{ Form::number('quantite_disponible', $fourniture->quantiteDisponible, ['min'=>'0', 'max'=>'100']) }}
@@ -206,7 +206,7 @@
                                 {{ $fourniture->quantiteDisponible }}
                             @endif
                             </td>
-                        @if ($Personnel[0]->nomCategorie != 'Administrateur')
+                        @if ($donneesPersonnel['Personnel'][0]->nomCategorie != 'Administrateur')
                             <td>
                                 {!! Form::open(['url' => 'commander']) !!}
                                 {{ Form::hidden('id', $fourniture->id) }}

@@ -15,33 +15,14 @@ class ServiceController extends Controller
         }
 
         if (!isset($_SESSION['mail'])) {
-            header('Refresh: 0; url=http://localhost/PPE3/Application/server.php?page=departements');
+            header('Refresh: 0; url='.url('?page=departements'));
             exit;
         }
 
-        $Personnel = Personnel::donneesPersonnel()[0];
+        $donneesPersonnel = Personnel::donneesPersonnel();
+        $donneesService = Service::donneesService();
 
-        $commande = Personnel::donneesPersonnel()[1];
-
-        $commande_fini = Personnel::donneesPersonnel()[2];
-
-        $Services = Service::select('services.*')->get();
-
-        $Personnels = Personnel::join('services', 'personnels.idService', 'services.id')->join('categories', 'personnels.idCategorie', 'categories.id')->select('*')->orderby('personnels.id', 'asc')->get();
-
-        $ServiceUtilvalideur = Service::join('personnels', 'services.id', 'personnels.idService')->join('categories', 'personnels.idCategorie', 'categories.id')->select('services.*', 'nom', 'prenom', 'mail', 'nomCategorie')->where('nomService', $Personnel[0]->nomService)->where('nomCategorie', 'Valideur')->get();
-
-        $ServiceUtil = Service::select('services.*')->where('nomService', $Personnel[0]->nomService)->get();
-
-        if (isset($ServiceUtilvalideur[0])) {
-            $service_util = $ServiceUtilvalideur;
-        } else {
-            $service_util = $ServiceUtil;
-        }
-
-        //$_SESSION['services'] = $Services;
-
-        return view('departements', ['Personnel' => $Personnel, 'commande' => $commande, 'commandes_fini' => $commande_fini, 'personnels' => $Personnels, 'services' => $Services, 'service_util' => $service_util]);
+        return view('departements', ['donneesService' => $donneesService, 'donneesPersonnel' => $donneesPersonnel]);
     }
 
     public function creationdepartement(Request $request)
@@ -58,31 +39,12 @@ class ServiceController extends Controller
         $Service->descriptionService = $request->description_departement;
         $Service->save();
 
-        $Personnel = Personnel::donneesPersonnel()[0];
-
-        $commande = Personnel::donneesPersonnel()[1];
-
-        $commande_fini = Personnel::donneesPersonnel()[2];
-
-        $Personnels = Personnel::join('services', 'personnels.idService', 'services.id')->join('categories', 'personnels.idCategorie', 'categories.id')->select('*')->orderby('personnels.id', 'asc')->get();
-
-        $ServiceUtilvalideur = Service::join('personnels', 'services.id', 'personnels.idService')->join('categories', 'personnels.idCategorie', 'categories.id')->select('services.*', 'nom', 'prenom', 'mail', 'nomCategorie')->where('nomService', $Personnel[0]->nomService)->where('nomCategorie', 'Valideur')->get();
-
-        $ServiceUtil = Service::select('services.*')->where('nomService', $Personnel[0]->nomService)->get();
-
-        if (isset($ServiceUtilvalideur[0])) {
-            $service_util = $ServiceUtilvalideur;
-        } else {
-            $service_util = $ServiceUtil;
-        }
-
-        $Services = Service::select('services.*')->get();
-
-        //$_SESSION['services'] = $Services;
+        $donneesPersonnel = Personnel::donneesPersonnel();
+        $donneesService = Service::donneesService();
 
         $cree = true;
 
-        return view('departements', ['cree' => $cree, 'Personnel' => $Personnel, 'commande' => $commande, 'commandes_fini' => $commande_fini, 'personnels' => $Personnels, 'services' => $Services, 'service_util' => $service_util]);
+        return view('departements', ['cree' => $cree, 'donneesService' => $donneesService, 'donneesPersonnel' => $donneesPersonnel]);
     }
 
     public function modificationvalideur(Request $request)
@@ -102,32 +64,32 @@ class ServiceController extends Controller
             $majAncienValid = Personnel::where('mail', $request->mail_ancien_valideur)->update(['idCategorie' => '1']);
         }
 
-        $Personnels = Personnel::join('services', 'personnels.idService', 'services.id')->join('categories', 'personnels.idCategorie', 'categories.id')->select('*')->orderby('personnels.id', 'asc')->get();
-
-        $Personnel = Personnel::donneesPersonnel()[0];
-
-        $commande = Personnel::donneesPersonnel()[1];
-
-        $commande_fini = Personnel::donneesPersonnel()[2];
-
-        $Personnels = Personnel::join('services', 'personnels.idService', 'services.id')->join('categories', 'personnels.idCategorie', 'categories.id')->select('*')->orderby('personnels.id', 'asc')->get();
-
-        $ServiceUtilvalideur = Service::join('personnels', 'services.id', 'personnels.idService')->join('categories', 'personnels.idCategorie', 'categories.id')->select('services.*', 'nom', 'prenom', 'mail', 'nomCategorie')->where('nomService', $Personnel[0]->nomService)->where('nomCategorie', 'Valideur')->get();
-
-        $ServiceUtil = Service::select('services.*')->where('nomService', $Personnel[0]->nomService)->get();
-
-        if (isset($ServiceUtilvalideur[0])) {
-            $service_util = $ServiceUtilvalideur;
-        } else {
-            $service_util = $ServiceUtil;
-        }
-
-        $Services = Service::select('services.*')->get();
-
-        //$_SESSION['personnels'] = $Personnels;
+        $donneesPersonnel = Personnel::donneesPersonnel();
+        $donneesService = Service::donneesService();
 
         $valider = true;
 
-        return view('departements', ['valider' => $valider, 'Personnel' => $Personnel, 'commande' => $commande, 'commandes_fini' => $commande_fini, 'personnels' => $Personnels, 'services' => $Services, 'service_util' => $service_util]);
+        return view('departements', ['valider' => $valider, 'donneesService' => $donneesService, 'donneesPersonnel' => $donneesPersonnel]);
+    }
+
+    public function modificationservice(Request $request)
+    {
+        $validatedData = $request->validate([
+            'id' => 'required',
+            'nom_service' => 'required|max:50',
+        ]);
+
+        session_start();
+
+        $idService = Service::select('id')->where('nomService', $request->nom_service)->get();
+
+        Personnel::where('id', $request->id)->update(['idService' => $idService[0]->id]);
+
+        $donneesPersonnel = Personnel::donneesPersonnel();
+        $donneesAccueil = Personnel::donneesAccueil();
+
+        $valider = true;
+
+        return view('accueil', ['valider' => $valider, 'donneesPersonnel' => $donneesPersonnel, 'donneesAccueil' => $donneesAccueil]);
     }
 }

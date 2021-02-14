@@ -13,7 +13,7 @@
                 exit; @endphp
             @endif
 
-            @if ($Personnel[0]->nomCategorie != 'Administrateur')
+            @if ($donneesPersonnel['Personnel'][0]->nomCategorie != 'Administrateur')
                 @php ($droitinsuffisant = $droitinsuf ?? false)
                 @if ($droitinsuffisant)
                     <p class="erreur"><img class="img_erreur" src="{{ asset('storage/app/public/warning.png') }}" alt="Icon de confirmation" /> Vous n'avez pas les droits pour accéder à cette page !</p><br />
@@ -21,8 +21,8 @@
                 @endif
 
                 <!-- Affichage d'un message -->
-                @if ($Personnel[0]->message != '')
-                    <section id="message">{{ $Personnel[0]->message }}</section>
+                @if ($donneesPersonnel['Personnel'][0]->message != '')
+                    <section id="message">{{ $donneesPersonnel['Personnel'][0]->message }}</section>
                 @endif
 
                 <table id="liste_fourniture">
@@ -36,15 +36,15 @@
                     </tr>
                 @for ($i=0; $i < 6; $i++)
                     <tr>
-                        <td><img class="photo_fournitures" src="{{ asset('storage/app/public/'.$Fournitures[$i]->nomPhoto.'.jpg') }}" /></td>
-                        <td>{{ $Fournitures[$i]->nomFournitures }}</td>
-                        <td>{{ $Fournitures[$i]->descriptionFournitures }}</td>
-                        <td>{{ $Fournitures[$i]->quantiteDisponible }}</td>
+                        <td><img class="photo_fournitures" src="{{ asset('storage/app/public/'.$donneesAccueil['Fournitures'][$i]->nomPhoto.'.jpg') }}" /></td>
+                        <td>{{ $donneesAccueil['Fournitures'][$i]->nomFournitures }}</td>
+                        <td>{{ $donneesAccueil['Fournitures'][$i]->descriptionFournitures }}</td>
+                        <td>{{ $donneesAccueil['Fournitures'][$i]->quantiteDisponible }}</td>
                         <td>
                             {!! Form::open(['url' => 'commander']) !!}
-                            {{ Form::hidden('id', $Fournitures[$i]->id) }}
-                            {{ Form::hidden('nom_fourniture', $Fournitures[$i]->nomFournitures) }}
-                            {{ Form::number('quantite_demande', '1', ['min'=>'1', 'max'=>$Fournitures[$i]->quantiteDisponible]) }}
+                            {{ Form::hidden('id', $donneesAccueil['Fournitures'][$i]->id) }}
+                            {{ Form::hidden('nom_fourniture', $donneesAccueil['Fournitures'][$i]->nomFournitures) }}
+                            {{ Form::number('quantite_demande', '1', ['min'=>'1', 'max'=>$donneesAccueil['Fournitures'][$i]->quantiteDisponible]) }}
                             {{ Form::submit('Commander', ['class'=>'submit']) }}
                             {!! Form::close() !!}
                         </td>
@@ -94,27 +94,35 @@
                     @php (header('Refresh: 5; url=accueil'))
                 @endif
 
-                @if ($Personnel[0]->message != '')
-                    <section id="message">{{ $Personnel[0]->message }}</section>
+                @php ($valide = $valider ?? false)
+                @if ($valide)
+                    <p class="confirm"><img class="img_confirm" src="{{ asset('storage/app/public/confirm.png') }}" alt="Icon de confirmation" /> La mise à jour à bien été prise en compte</p><br />
+                    @php (header('Refresh: 5; url=accueil'))
+                @endif
+
+                @if ($donneesPersonnel['Personnel'][0]->message != '')
+                    <section id="message">{{ $donneesPersonnel['Personnel'][0]->message }}</section>
                 @endif
 
                 <a href="accueil" id="haut_page"><img id="img_haut_page" src="{{ asset('storage/app/public/haut-page.png') }}" alt="Flèche" /></a>
 
                 <h4>Modification du logo :</h4>
-                {!! Form::open(['url' => 'modificationlogo', 'files' => true, 'id'=>'modificationlogo']) !!}
-                {{ Form::file('photo_logo', ['required']) }}
-                {{ Form::submit('Modifier le logo') }}
-                {!! Form::close() !!}
+                <div id="divmodificationlogo">
+                    {!! Form::open(['url' => 'modificationlogo', 'files' => true, 'id'=>'modificationlogo']) !!}
+                    {{ Form::file('photo_logo', ['required']) }}
+                    {{ Form::submit('Modifier le logo') }}
+                    {!! Form::close() !!}
 
-                <button type="button" id="suppressionlogo" onclick="window.location.href='suppressionlogo'">Supprimer le logo</button>
+                    <button type="button" id="suppressionlogo" onclick="window.location.href='suppressionlogo'">Supprimer le logo</button>
+                </div>
 
                 <h4>Envoyer un message à un utilisateur :</h4>
                 {!! Form::open(['url' => 'message']) !!}
                 {{ Form::textarea('message', $value = null, ['maxlength' => '1500', 'required']) }}
-                {{ Form::label('mail', 'Utilisateur :', ['id'=>'label_select']) }}
+                {{ Form::label('mail', 'Utilisateur :') }}
                 <select name="mail">
                     <option value="tous">Tous</option>
-                    @foreach ($Personnels as $lignes => $mailpersonnel)
+                    @foreach ($donneesAccueil['Personnels'] as $lignes => $mailpersonnel)
                         <option value="{{ $mailpersonnel->mail }}">{{ $mailpersonnel->mail }}</option>
                     @endforeach
                 </select>
@@ -129,16 +137,30 @@
                         <th>Nom</th>
                         <th>Prénom</th>
                         <th>Mail</th>
-                        <th>Service</th>
+                        <th class="tabl_fourn">Service</th>
                         <th>Catégorie</th>
                         <th id="col_message">Message</th>
                     </tr>
-                @foreach ($Personnels as $lignes => $personnel)
+                @foreach ($donneesAccueil['Personnels'] as $lignes => $personnel)
                     <tr>
                         <td>{{ $personnel->nom }}</td>
                         <td>{{ $personnel->prenom }}</td>
                         <td>{{ $personnel->mail }}</td>
-                        <td>{{ $personnel->nomService }}</td>
+                        <td>
+                            {!! Form::open(['url' => 'modificationservice']) !!}
+                            {{ Form::hidden('id', $personnel->id) }}
+                            <select name="nom_service">
+                                @foreach ($donneesAccueil['services'] as $lignes => $service)
+                                    @if ($service->nomService == $personnel->nomService)
+                                        <option value="{{ $service->nomService }}" selected >{{ $service->nomService }}</option>
+                                    @else
+                                        <option value="{{ $service->nomService }}" >{{ $service->nomService }}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                            {{ Form::submit('Mettre à jour', ['class'=>'submit']) }}
+                            {!! Form::close() !!}
+                        </td>
                         <td>{{ $personnel->nomCategorie }}</td>
                         <td>
                             {{ $personnel->message }}
@@ -165,20 +187,20 @@
                         <th>Création</th>
                         <th>Dernière mise à jour</th>
                     </tr>
-                @if ($commandes_liste->count() < 6)
-                    @php ($max = $commandes_liste->count())
+                @if ($donneesAccueil['commandes_liste']->count() < 6)
+                    @php ($max = $donneesAccueil['commandes_liste']->count())
                 @else
                     @php ($max = 6)
                 @endif
                 @for ($l=0; $l < $max; $l++)
                     <tr>
-                        <td>{{ $commandes_liste[$l]->nom }}</td>
-                        <td>{{ $commandes_liste[$l]->prenom }}</td>
-                        <td>{{ $commandes_liste[$l]->nomCommandes }}</td>
-                        <td>{{ $commandes_liste[$l]->quantiteDemande }}</td>
-                        <td>{{ $commandes_liste[$l]->nomEtat }}</td>
-                        <td>{{ date('G:i:s \l\e d-m-Y', strtotime($commandes_liste[$l]->created_at)) }}</td>
-                        <td>{{ date('G:i:s \l\e d-m-Y', strtotime($commandes_liste[$l]->updated_at)) }}</td>
+                        <td>{{ $donneesAccueil['commandes_liste'][$l]->nom }}</td>
+                        <td>{{ $donneesAccueil['commandes_liste'][$l]->prenom }}</td>
+                        <td>{{ $donneesAccueil['commandes_liste'][$l]->nomCommandes }}</td>
+                        <td>{{ $donneesAccueil['commandes_liste'][$l]->quantiteDemande }}</td>
+                        <td>{{ $donneesAccueil['commandes_liste'][$l]->nomEtat }}</td>
+                        <td>{{ date('G:i:s \l\e d-m-Y', strtotime($donneesAccueil['commandes_liste'][$l]->created_at)) }}</td>
+                        <td>{{ date('G:i:s \l\e d-m-Y', strtotime($donneesAccueil['commandes_liste'][$l]->updated_at)) }}</td>
                     </tr>
                 @endfor
                 </table>

@@ -9,8 +9,9 @@
             @php (header('Refresh: 0; url='.url('')))
             @php (exit)
         @endif
-        @if (isset($_GET['page']))
-            @switch ($_GET['page'])
+        @if (isset($_GET['page']) OR isset($page))
+            @php ($switch = $_GET['page'] ?? $page)
+            @switch ($switch)
                 @case ('departements')
                     @php ($page = 'departements')
                     @break

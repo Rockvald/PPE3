@@ -98,3 +98,5 @@ Route::get('/departements', [ServiceController::class, 'afficher'])->name('depar
 Route::post('/creationdepartement', [ServiceController::class, 'creationdepartement']);
 
 Route::post('/modificationvalideur', [ServiceController::class, 'modificationvalideur']);
+
+Route::post('/modificationservice', [ServiceController::class, 'modificationservice']);

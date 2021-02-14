@@ -3,7 +3,7 @@
 @include('menus')
 @include('header')
         <section id="corps">
-            <?php if ($Personnel[0]->nomCategorie != 'Administrateur') {
+            <?php if ($donneesPersonnel['Personnel'][0]->nomCategorie != 'Administrateur') {
                   } else { ?>
             <?php } ?>
         </section>

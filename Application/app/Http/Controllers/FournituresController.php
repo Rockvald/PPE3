@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Fournitures;
-use App\Models\FamillesFournitures;
 use App\Models\Personnel;
 
 class FournituresController extends Controller
@@ -16,30 +15,14 @@ class FournituresController extends Controller
         }
 
         if (!isset($_SESSION['mail'])) {
-            header('Refresh: 0; url='.url("?page=fournitures"));
+            header('Refresh: 0; url='.url('?page=fournitures'));
             exit;
         }
 
-        $Personnel = Personnel::donneesPersonnel()[0];
+        $donneesPersonnel = Personnel::donneesPersonnel();
+        $donneesFourniture = Fournitures::donneesFourniture();
 
-        $commande = Personnel::donneesPersonnel()[1];
-
-        $commande_fini = Personnel::donneesPersonnel()[2];
-
-        $Fournitures = Fournitures::join('familles_fournitures', 'fournitures.idFamille', 'familles_fournitures.id')->select('fournitures.*', 'nomFamille')->orderby('fournitures.id', 'asc')->get();
-
-        $Familles = FamillesFournitures::select('*')->get();
-
-        foreach ($Familles as $lignes => $famille) {
-            $nomFamille = $famille->nomFamille;
-            $$nomFamille = Fournitures::join('familles_fournitures', 'fournitures.idFamille', 'familles_fournitures.id')->where('nomFamille', $famille->nomFamille)->select('fournitures.*', 'nomFamille')->get();
-            $donnesFamille["$nomFamille"] = $$nomFamille;
-        }
-
-        //$_SESSION['famillesfournitures'] = $Familles;
-        //$_SESSION['fournitures'] = $Fournitures;
-
-        return view('fournitures', ['Personnel' => $Personnel, 'commande' => $commande, 'commandes_fini' => $commande_fini, 'fournitures' => $Fournitures, 'famillesfournitures' => $Familles, 'donnesFamille' => $donnesFamille]);
+        return view('fournitures', ['donneesPersonnel' => $donneesPersonnel, 'donneesFourniture' => $donneesFourniture]);
     }
 
     public function rechercher(Request $request)
@@ -56,23 +39,8 @@ class FournituresController extends Controller
 
         $resultats = Fournitures::join('familles_fournitures', 'fournitures.idFamille', 'familles_fournitures.id')->select('fournitures.*', 'nomFamille')->where('nomFournitures', 'like', '%'.$recherche.'%')->orWhere('nomFamille', 'like', '%'.$recherche.'%')->orderby('fournitures.id', 'asc')->get();
 
-        $Personnel = Personnel::donneesPersonnel()[0];
-
-        $commande = Personnel::donneesPersonnel()[1];
-
-        $commande_fini = Personnel::donneesPersonnel()[2];
-
-        $Fournitures = Fournitures::join('familles_fournitures', 'fournitures.idFamille', 'familles_fournitures.id')->select('fournitures.*', 'nomFamille')->orderby('fournitures.id', 'asc')->get();
-
-        $Familles = FamillesFournitures::select('*')->get();
-
-        foreach ($Familles as $lignes => $famille) {
-            $nomFamille = $famille->nomFamille;
-            $$nomFamille = Fournitures::join('familles_fournitures', 'fournitures.idFamille', 'familles_fournitures.id')->where('nomFamille', $famille->nomFamille)->select('fournitures.*', 'nomFamille')->get();
-            $donnesFamille["$nomFamille"] = $$nomFamille;
-        }
-
-        //$_SESSION['recherche'] = $resultat;
+        $donneesPersonnel = Personnel::donneesPersonnel();
+        $donneesFourniture = Fournitures::donneesFourniture();
 
         if (isset($resultats[0])) {
             $reponse = true;
@@ -80,19 +48,22 @@ class FournituresController extends Controller
             $reponse = false;
         }
 
-        return view('fournitures', ['reponse' => $reponse, 'Personnel' => $Personnel, 'commande' => $commande, 'commandes_fini' => $commande_fini, 'fournitures' => $Fournitures, 'famillesfournitures' => $Familles, 'donnesFamille' => $donnesFamille, 'resultats' => $resultats]);
+        return view('fournitures', ['reponse' => $reponse, 'donneesPersonnel' => $donneesPersonnel, 'donneesFourniture' => $donneesFourniture, 'resultats' => $resultats]);
     }
 
     public function creationfourniture(Request $request)
     {
         $validatedData = $request->validate([
             'photo_fournitures' => 'required',
-            'nom_fourniture'=> 'required|max50',
+            'nom_fourniture'=> 'required|max:50',
             'description_fourniture' => 'required|max:50',
             'quantite_disponible' => 'required|min:1|max:100',
         ]);
 
         session_start();
+
+        $donneesPersonnel = Personnel::donneesPersonnel();
+        $donneesFourniture = Fournitures::donneesFourniture();
 
         $nomMinuscules = strtolower($request->nom_fourniture);
 
@@ -104,7 +75,7 @@ class FournituresController extends Controller
 
             $tropgros = true;
 
-            return view('fournitures', ['tropgros' => $tropgros, 'requete' => $request]);
+            return view('fournitures', ['tropgros' => $tropgros, 'requete' => $request, 'donneesPersonnel' => $donneesPersonnel, 'donneesFourniture' => $donneesFourniture]);
         }
 
         $fichierTelecharger = $request->file('photo_fournitures');
@@ -123,7 +94,7 @@ class FournituresController extends Controller
                 break;
             default:
                 $invalide = true;
-                return view('fournitures', ['invalide' => $invalide, 'requete' => $request]);
+                return view('fournitures', ['invalide' => $invalide, 'requete' => $request, 'donneesPersonnel' => $donneesPersonnel, 'donneesFourniture' => $donneesFourniture]);
                 break;
         }
 
@@ -143,13 +114,9 @@ class FournituresController extends Controller
 
         $Fournitures->save();
 
-        $Fournitures = Fournitures::join('familles_fournitures', 'fournitures.idFamille', 'familles_fournitures.id')->select('fournitures.*', 'nomFamille')->orderby('fournitures.id', 'asc')->get();
-
-        $_SESSION['fournitures'] = $Fournitures;
-
         $cree = true;
 
-        return view('fournitures', ['cree' => $cree]);
+        return view('fournitures', ['cree' => $cree, 'donneesPersonnel' => $donneesPersonnel, 'donneesFourniture' => $donneesFourniture]);
     }
 
     public function majquantite(Request $request)
@@ -163,12 +130,11 @@ class FournituresController extends Controller
 
         $majquantite = Fournitures::where('id', $request->id)->update(['quantiteDisponible' => $request->quantite_disponible]);
 
-        $Fournitures = Fournitures::join('familles_fournitures', 'fournitures.idFamille', 'familles_fournitures.id')->select('fournitures.*', 'nomFamille')->orderby('fournitures.id', 'asc')->get();
-
-        $_SESSION['fournitures'] = $Fournitures;
+        $donneesPersonnel = Personnel::donneesPersonnel();
+        $donneesFourniture = Fournitures::donneesFourniture();
 
         $valider = true;
 
-        return view('fournitures', ['valider' => $valider]);
+        return view('fournitures', ['valider' => $valider, 'donneesPersonnel' => $donneesPersonnel, 'donneesFourniture' => $donneesFourniture]);
     }
 }
