@@ -22,10 +22,17 @@ class PersonnelController extends Controller
             'prenom' => 'required|max:50',
             'email' => 'required|max:50|email',
             'mdp' => 'required',
+            'confirm_mdp' => 'required',
             'categorie' => 'required',
             'service' => 'required',
             'page' => 'required',
         ]);
+
+        if (!password_verify($request->mdp, $request->comfirm_mdp)) {
+            $erreur = 'confirm';
+            $Services = Service::select('services.*')->orderby('id', 'asc')->get();
+            return view('inscription', ['erreur' => $erreur, 'Services' => $Services, 'nom' => $request->nom, 'prenom' => $request->prenom, 'mail' => $request->email]);
+        }
 
         $Personnel = new Personnel;
 
@@ -277,8 +284,44 @@ class PersonnelController extends Controller
         }
 
         $donneesPersonnel = Personnel::donneesPersonnel();
-        $donneesAccueil = Personnel::donneesAccueil();
 
-        return view('personnalisationducompte', ['donneesAccueil' => $donneesAccueil, 'donneesPersonnel' => $donneesPersonnel]);
+        return view('personnalisationducompte', ['donneesPersonnel' => $donneesPersonnel]);
+    }
+
+    public function modificationPersonnalisation(Request $request)
+    {
+        $validatedData = $request->validate([
+            'nom' => '|max:50',
+            'prenom' => '|max:50',
+            'mail' => '|max:50|email',
+            'page' => 'required',
+        ]);
+
+        $donneesPersonnel = Personnel::donneesPersonnel();
+
+        if (!password_verify($request->mdp, $request->comfirm_mdp)) {
+            $erreur = 'confirm';
+            return view('personnalisationducompte', ['donneesPersonnel' => $donneesPersonnel, 'erreur' => $erreur]);
+        }
+
+        if ($request->nom != $donneesPersonnel['Personnel'][0]->nom AND $request->nom != '') {
+            $Personnel = Personnel::where('mail', $request->mail)->update(['nom' => $request->nom]);
+        }
+
+        if ($request->prenom != $donneesPersonnel['Personnel'][0]->prenom AND $request->prenom != '') {
+            $Personnel = Personnel::where('mail', $request->mail)->update(['prenom' => $request->prenom]);
+        }
+
+        if ($request->mail != $donneesPersonnel['Personnel'][0]->mail AND $request->mail != '') {
+            $Personnel = Personnel::where('mail', $request->mail)->update(['mail' => $request->mail]);
+        }
+
+        if ($request->mdp != $donneesPersonnel['Personnel'][0]->mdp AND $request->mdp != '') {
+            $Personnel = Personnel::where('mail', $request->mail)->update(['mdp' => password_hash($request->mdp, PASSWORD_DEFAULT)]);
+        }
+
+        $confirm = true;
+
+        return view('personnalisationducompte', ['donneesPersonnel' => $donneesPersonnel, 'confirm' => $confirm]);
     }
 }

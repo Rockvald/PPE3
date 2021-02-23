@@ -4,19 +4,26 @@
             <img src="{{ asset('storage/app/public/logo-cci.png') }}" alt="Logo de la CCI" />
             <h1>Inscription</h1>
         </header>
+        @if (isset($erreur))
+            <p class="erreur"><img class="img_erreur" src="{{ asset('storage/app/public/warning.png') }}" alt="Icone d'erreur" /> Les mots de passe sont différents !</p>
+        @endif
+
         {!! Form::open(['url' => 'inscription']) !!}
         {{ Form::hidden('page', 'accueil') }}
         {{ Form::label('nom', 'Nom') }}
-        {{ Form::text('nom', $value = null, ['maxlength'=>'50', 'required']) }}
+        {{ Form::text('nom', $value = $nom ?? null, ['maxlength'=>'50', 'required']) }}
         <br>
         {{ Form::label('prenom', 'Prénom') }}
-        {{ Form::text('prenom', $value = null, ['maxlength'=>'50', 'required']) }}
+        {{ Form::text('prenom', $value = $prenom ?? null, ['maxlength'=>'50', 'required']) }}
         <br>
         {{ Form::label('email', 'Adresse mail') }}
-        {{ Form::email('email', $value = null, ['maxlength'=>'50', 'required']) }}
+        {{ Form::email('email', $value = $mail ?? null, ['maxlength'=>'50', 'required']) }}
         <br>
         {{ Form::label('mdp', 'Mot de passe') }}
         {{ Form::password('mdp', ['required']) }}
+        <br>
+        {{ Form::label('confirm_mdp', 'Confirmation du mot de passe') }}
+        {{ Form::password('confirm_mdp', ['required']) }}
         <br>
         {{ Form::label('categorie', 'Catégorie') }}
         {{ Form::select('categorie',[

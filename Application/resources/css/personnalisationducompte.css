@@ -191,6 +191,12 @@ th, td
     padding: 1% 0% 1% 0%;
 }
 
+caption
+{
+    font-size: 18px;
+    font-weight: bold;
+}
+
 .confirm
 {
     background: #09b302;
@@ -201,17 +207,43 @@ th, td
     font-weight: bold;
 }
 
-.img_confirm
+.erreur
+{
+    background: #ee0000;
+    border-radius: 5px;
+    text-align: center;
+    padding: 0.3%;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.img_confirm, .img_erreur
 {
     width: 1.1%;
     position: relative;
     top: 2px;
 }
 
-caption
+#formpersonnalisation
 {
-    font-size: 18px;
-    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+	align-items: center;
+    width: 20%;
+    margin: auto;
+    margin-bottom: 14%;
+}
+
+.formpersonnalisation
+{
+    margin-top: 15%;
+    margin-bottom: 2%;
+}
+
+.submit
+{
+    margin-top: 20%;
+    margin-bottom: 5%;
 }
 
 footer
