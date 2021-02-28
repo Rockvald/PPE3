@@ -8,6 +8,8 @@ use App\Models\Service;
 
 class PersonnelController extends Controller
 {
+    // TODO: Ajouter une fonction pour supprimer un compte
+
     public function creer()
     {
         $Services = Service::select('services.*')->orderby('id', 'asc')->get();

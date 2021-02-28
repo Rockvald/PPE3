@@ -17,6 +17,7 @@ class CreateEtatTable extends Migration
             $table->id();
             $table->string('nomEtat', 255);
             $table->string('descriptionEtat', 255);
+            $table->timestamps();
         });
     }
 
