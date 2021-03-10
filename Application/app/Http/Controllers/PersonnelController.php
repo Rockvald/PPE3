@@ -30,7 +30,7 @@ class PersonnelController extends Controller
             'page' => 'required',
         ]);
 
-        if (!password_verify($request->mdp, $request->comfirm_mdp)) {
+        if ($request->mdp != $request->comfirm_mdp) {
             $erreur = 'confirm';
             $Services = Service::select('services.*')->orderby('id', 'asc')->get();
             return view('inscription', ['erreur' => $erreur, 'Services' => $Services, 'nom' => $request->nom, 'prenom' => $request->prenom, 'mail' => $request->email]);
@@ -41,7 +41,7 @@ class PersonnelController extends Controller
         $Personnel->nom = $request->nom;
         $Personnel->prenom = $request->prenom;
         $Personnel->mail = $request->email;
-        $Personnel->pass = password_hash($request->mdp, PASSWORD_DEFAULT);
+        $Personnel->pass = hash('sha256', $request->mdp);
         $Personnel->idCategorie = $request->categorie;
         $Personnel->idService = $request->service;
         $Personnel->message = '';
@@ -61,17 +61,19 @@ class PersonnelController extends Controller
 
         $Personnel = Personnel::join('services', 'personnels.idService', 'services.id')->join('categories', 'personnels.idCategorie', 'categories.id')->where('mail', $request->email)->get();
 
+        $mdp = hash('sha256', $request->mdp);
+
         if ($Personnel->isEmpty())
         {
             $erreur = 'mail';
             return view('connexion', ['erreur' => $erreur, 'page' => $request->page]);
         }
-        elseif (!password_verify($request->mdp, $Personnel[0]->pass))
+        elseif ($mdp != $Personnel[0]->pass)
         {
             $erreur = 'mdp';
             return view('connexion', ['erreur' => $erreur, 'mail' => $request->email, 'page' => $request->page]);
         }
-        elseif ($request->email == $Personnel[0]->mail AND password_verify($request->mdp, $Personnel[0]->pass))
+        elseif ($request->email == $Personnel[0]->mail AND $mdp = $Personnel[0]->pass)
         {
             session_start();
 
@@ -299,9 +301,11 @@ class PersonnelController extends Controller
             'page' => 'required',
         ]);
 
+        session_start();
+
         $donneesPersonnel = Personnel::donneesPersonnel();
 
-        if (!password_verify($request->mdp, $request->comfirm_mdp)) {
+        if ($request->mdp != $request->comfirm_mdp) {
             $erreur = 'confirm';
             return view('personnalisationducompte', ['donneesPersonnel' => $donneesPersonnel, 'erreur' => $erreur]);
         }
@@ -319,7 +323,7 @@ class PersonnelController extends Controller
         }
 
         if ($request->mdp != $donneesPersonnel['Personnel'][0]->mdp AND $request->mdp != '') {
-            $Personnel = Personnel::where('mail', $request->mail)->update(['mdp' => password_hash($request->mdp, PASSWORD_DEFAULT)]);
+            $Personnel = Personnel::where('mail', $request->mail)->update(['pass' => hash('sha256', $request->mdp)]);
         }
 
         $confirm = true;

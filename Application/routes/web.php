@@ -55,7 +55,7 @@ Route::get('/statistique', [PersonnelController::class, 'statistique'])->name('s
 
 Route::get('/personnalisationducompte', [PersonnelController::class, 'personnalisationducompte'])->name('personnalisationducompte');
 
-Route::get('/modificationPersonnalisation', [PersonnelController::class, 'modificationPersonnalisation']);
+Route::post('/modificationPersonnalisation', [PersonnelController::class, 'modificationPersonnalisation']);
 
 
 // Gestion des fournitures
