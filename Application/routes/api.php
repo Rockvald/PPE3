@@ -176,8 +176,8 @@ Route::delete('/supprimer/fourniture/{id}', function ($id) {
 
 
 // Gestion des personnels
-Route::get('/personnel/{id}', function ($id) {
-    return new PersonnelResource(Personnel::findOrFail($id));
+Route::get('/personnel', function () {
+    return PersonnelResource::afficher();
 });
 
 Route::get('/liste/personnels', function () {

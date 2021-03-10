@@ -32,6 +32,26 @@ class PersonnelResource extends JsonResource
         ];
     }
 
+    static function afficher()
+    {
+        $donnees = json_decode(file_get_contents("php://input"));
+
+        $Personnel = Personnel::where('mail', $donnees->mail)->get();
+
+        return [
+            'id' => $Personnel[0]->id,
+            'idCategorie' => $Personnel[0]->idCategorie,
+            'idService' => $Personnel[0]->idService,
+            'nom' => $Personnel[0]->nom,
+            'prenom' => $Personnel[0]->prenom,
+            'mail' => $Personnel[0]->mail,
+            'pass' => $Personnel[0]->pass,
+            'message' => $Personnel[0]->message,
+            'created_at' => $Personnel[0]->created_at,
+            'updated_at' => $Personnel[0]->updated_at
+        ];
+    }
+
     static function creer()
     {
         $donnees = json_decode(file_get_contents("php://input"));
