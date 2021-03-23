@@ -30,7 +30,7 @@ class PersonnelController extends Controller
             'page' => 'required',
         ]);
 
-        if ($request->mdp != $request->comfirm_mdp) {
+        if ($request->mdp != $request->confirm_mdp) {
             $erreur = 'confirm';
             $Services = Service::select('services.*')->orderby('id', 'asc')->get();
             return view('inscription', ['erreur' => $erreur, 'Services' => $Services, 'nom' => $request->nom, 'prenom' => $request->prenom, 'mail' => $request->email]);
@@ -298,14 +298,15 @@ class PersonnelController extends Controller
             'nom' => '|max:50',
             'prenom' => '|max:50',
             'mail' => '|max:50|email',
-            'page' => 'required',
+            'mdp' => 'required',
+            'confirm_mdp' => 'required',
         ]);
 
         session_start();
 
         $donneesPersonnel = Personnel::donneesPersonnel();
 
-        if ($request->mdp != $request->comfirm_mdp) {
+        if ($request->mdp != $request->confirm_mdp) {
             $erreur = 'confirm';
             return view('personnalisationducompte', ['donneesPersonnel' => $donneesPersonnel, 'erreur' => $erreur]);
         }

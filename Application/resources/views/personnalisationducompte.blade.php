@@ -10,11 +10,10 @@
             @php ($confirmation = $confirm ?? false)
             @if ($confirmation)
                 <p class="confirm"><img class="img_confirm" src="{{ asset('storage/app/public/confirm.png') }}" alt="Icon de confirmation" /> Les modifications ont bien été prisent en compte</p><br />
-                @php (header('Refresh: 5; url=accueil'))
+                @php (header('Refresh: 5; url=personnalisationducompte'))
             @endif
 
             {!! Form::open(['url' => 'modificationPersonnalisation', 'id'=>'formpersonnalisation']) !!}
-            {{ Form::hidden('page', 'personnalisationducompte') }}
             {{ Form::label('nom', 'Nom', ['class'=>'formpersonnalisation']) }}
             {{ Form::text('nom', $value = $donneesPersonnel['Personnel'][0]->nom ?? null, ['maxlength'=>'50']) }}
             <br>
@@ -28,7 +27,7 @@
             {{ Form::password('mdp') }}
             <br>
             {{ Form::label('confirm_mdp', 'Confirmation du mot de passe', ['class'=>'formpersonnalisation']) }}
-            {{ Form::password('comfirm_mdp') }}
+            {{ Form::password('confirm_mdp') }}
             <br>
             {{ Form::submit('Enregister les modifications', ['class'=>'submit']) }}
             {!! Form::close() !!}
