@@ -44,7 +44,7 @@ class CommandesResource extends JsonResource
 
         $commande->save();
 
-        return ['message' => 'La création à bien été effectué'];
+        return ['message' => 'Commande bien prise en compte'];
     }
 
     static function modifier($id)
