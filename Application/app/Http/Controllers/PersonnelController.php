@@ -73,7 +73,7 @@ class PersonnelController extends Controller
             $erreur = 'mdp';
             return view('connexion', ['erreur' => $erreur, 'mail' => $request->email, 'page' => $request->page]);
         }
-        elseif ($request->email == $Personnel[0]->mail AND $mdp = $Personnel[0]->pass)
+        elseif ($request->email == $Personnel[0]->mail AND $mdp == $Personnel[0]->pass)
         {
             session_start();
 
