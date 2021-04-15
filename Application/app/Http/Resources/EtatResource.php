@@ -13,6 +13,7 @@ class EtatResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
+
     public static $wrap = 'etat';
 
     public function toArray($request)

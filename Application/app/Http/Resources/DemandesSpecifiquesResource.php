@@ -13,6 +13,9 @@ class DemandesSpecifiquesResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
+
+    public static $wrap = 'demande';
+
     public function toArray($request)
     {
         return [

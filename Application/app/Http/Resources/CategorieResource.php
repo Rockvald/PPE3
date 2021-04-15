@@ -13,6 +13,7 @@ class CategorieResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
+
     public static $wrap = 'categorie';
 
     public function toArray($request)

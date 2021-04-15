@@ -75,7 +75,7 @@ class PersonnelResource extends JsonResource
     {
         $donnees = json_decode(file_get_contents("php://input"));
         if (isset($donnees->pass)) {
-            $pass = password_hash($donnees->pass, PASSWORD_DEFAULT);
+            $pass = hash('sha256', $donnees->pass);
         }
 
         $ancienneDonnees = Personnel::select('*')->where('id', $id)->get();
