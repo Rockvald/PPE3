@@ -70,7 +70,7 @@ nav li
     background: #002d4b;
     box-shadow: 0px 0px 0px;
     visibility: hidden;
-    height: 25%/*237px*/;
+    height: 25%;
     top: 8.4%;
     left: 15%;
     z-index: 1;
@@ -103,17 +103,16 @@ header
     color: #c2c2c2;
     display: flex;
 	align-items: center;
-    justify-content: space-between;
     flex-wrap: wrap;
     width: auto;
     margin-left: 15%;
     padding: 2%;
-    text-align: center;
 }
 
 h1
 {
     font-weight: normal;
+    margin-right: 35.95%;
 }
 
 #recherche
@@ -136,21 +135,30 @@ h1
 {
     width: 3%;
     position: relative;
-    top: 4px;
+    top: 5px;
     right: 40px;
+}
+
+#nom_deconnexion
+{
+    position: absolute;
+    top: 45px;
+    right: 2%;
+    width: 25%;
 }
 
 #nom_prenom
 {
     position: relative;
     top: 4px;
-    right: 75px;
     float: left;
 }
 
 #deconnexion
 {
     clear: both;
+    position: absolute;
+    right: 0;
 }
 
 #commandes_cours

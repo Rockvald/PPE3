@@ -25,7 +25,7 @@ Configuration :
 Avec phpmyadmin, créer une base de donnée vide, puis ouvrer le fichier .env, et modifier les valeurs des variables concernant la base de données.
 
 
-Si vous comptez utiliser l'application web sur une autre machine, vous devrez également modifier la valeur de la variable APP_URL du fichier .env
+Si vous comptez utiliser l'application web sur une autre machine, vous devrez également modifier la valeur de la variable APP_URL du fichier .env, en ramplacant "localhost" par l'adresse ip du serveur web.
 
 
 Lancer ensuite la commande suivante pour remplir la base de données :
