@@ -74,10 +74,11 @@ CREATE TABLE `fournitures` (
   `nomPhoto` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `descriptionFournitures` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `quantiteDisponible` int(11) NOT NULL,
+  `quantiteMinimum` int(11) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -146,15 +147,16 @@ INSERT INTO `familles_fournitures` VALUES (2,'Stylos bille','Tous les stylos à 
 INSERT INTO `familles_fournitures` VALUES (3,'Feuilles d\'imprimante','Toutes les feuilles d\'imprimante','2021-01-03 15:01:23','2021-01-03 15:01:23');
 INSERT INTO `familles_fournitures` VALUES (4,'Feuilles à dessin','Toutes les feuilles pour le dessin','2021-01-06 15:17:52','2021-01-06 15:17:52');
 
-INSERT INTO `fournitures` VALUES (1,2,'Stylo bic cristal bleu','stylo-bic-cristal-bleu','Stylo bic cristal bleu',7,'2020-12-10 13:22:28','2021-01-03 16:41:54');
-INSERT INTO `fournitures` VALUES (2,2,'Stylo bic cristal vert','stylo-bic-cristal-vert','Stylo bic cristal vert',9,'2020-12-10 13:22:28','2021-01-03 16:47:56');
-INSERT INTO `fournitures` VALUES (3,2,'Stylo bic cristal rouge','stylo-bic-cristal-rouge','Stylo bic cristal rouge',8,'2020-12-10 13:22:28','2020-12-27 10:01:47');
-INSERT INTO `fournitures` VALUES (4,1,'Stylo bic cristal noir','stylo-bic-cristal-noir','Stylo bic cristal noir',3,'2020-12-10 13:22:28','2020-12-10 13:22:28');
-INSERT INTO `fournitures` VALUES (5,2,'Lot de 4 stylo bic cristal','lot-stylo-bic-cristal','Lot de 4 stylo bic cristal',7,'2020-12-10 13:22:28','2020-12-10 13:22:28');
-INSERT INTO `fournitures` VALUES (6,2,'Stylo bic quatre couleurs','stylo-bic-quatre-couleurs','Stylo bic quatre couleurs',16,'2020-12-10 13:22:28','2020-12-10 13:22:28');
-INSERT INTO `fournitures` VALUES (7,1,'Ciseaux Maped','ciseaux-maped','Ciseaux de la marque Maped',11,'2020-12-27 12:47:04','2020-12-27 12:47:04');
-INSERT INTO `fournitures` VALUES (8,3,'Papier d\'imprimante Clairefontaine','papier-d\'imprimante-clairefontaine','Papier d\'imprimante Clairefontaine',21,'2020-12-27 13:00:27','2020-12-28 16:01:13');
-INSERT INTO `fournitures` VALUES (9,1,'Papier canson','papier-canson','Papier de la marque canson',10,'2020-12-29 16:37:47','2021-01-03 16:36:28');
+INSERT INTO `fournitures` VALUES (1,2,'Stylo bic cristal bleu','stylo-bic-cristal-bleu','Stylo bic cristal bleu',10, 12,'2020-12-10 13:22:28','2021-01-03 16:41:54');
+INSERT INTO `fournitures` VALUES (2,2,'Stylo bic cristal vert','stylo-bic-cristal-vert','Stylo bic cristal vert',9, 0,'2020-12-10 13:22:28','2021-01-03 16:47:56');
+INSERT INTO `fournitures` VALUES (3,2,'Stylo bic cristal rouge','stylo-bic-cristal-rouge','Stylo bic cristal rouge',8, 0,'2020-12-10 13:22:28','2020-12-27 10:01:47');
+INSERT INTO `fournitures` VALUES (4,1,'Stylo bic cristal noir','stylo-bic-cristal-noir','Stylo bic cristal noir',3, 0,'2020-12-10 13:22:28','2020-12-10 13:22:28');
+INSERT INTO `fournitures` VALUES (5,2,'Lot de 4 stylo bic cristal','lot-stylo-bic-cristal','Lot de 4 stylo bic cristal',7, 0,'2020-12-10 13:22:28','2020-12-10 13:22:28');
+INSERT INTO `fournitures` VALUES (6,2,'Stylo bic quatre couleurs','stylo-bic-quatre-couleurs','Stylo bic quatre couleurs',16, 0,'2020-12-10 13:22:28','2020-12-10 13:22:28');
+INSERT INTO `fournitures` VALUES (7,1,'Ciseaux Maped','ciseaux-maped','Ciseaux de la marque Maped',11, 0,'2020-12-27 12:47:04','2020-12-27 12:47:04');
+INSERT INTO `fournitures` VALUES (8,3,'Papier d\'imprimante Clairefontaine','papier-d\'imprimante-clairefontaine','Papier d\'imprimante Clairefontaine',18, 0,'2020-12-27 13:00:27','2020-12-28 16:01:13');
+INSERT INTO `fournitures` VALUES (9,1,'Papier canson','papier-canson','Papier de la marque canson',10, 0,'2020-12-29 16:37:47','2021-01-03 16:36:28');
+INSERT INTO `fournitures` VALUES (10, 1, 'Stic de colle UHU', 'stic-de-colle-uhu', 'Stic de colle UHU', 6, 5, '2021-06-10 07:29:14', '2021-06-10 07:36:04');
 
 INSERT INTO `migrations` VALUES (1,'2020_10_28_144756_create_commandes_table',1);
 INSERT INTO `migrations` VALUES (2,'2020_10_28_144825_create_fournitures_table',1);

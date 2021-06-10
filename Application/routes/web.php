@@ -67,6 +67,8 @@ Route::post('/creationfourniture', [FournituresController::class, 'creationfourn
 
 Route::post('/majquantite', [FournituresController::class, 'majquantite']);
 
+Route::post('/majquantitemin', [FournituresController::class, 'majquantitemin']);
+
 
 // Gestion des familles des fournitures
 Route::get('/famillesfournitures', [FamillesFournituresController::class, 'afficher'])->name('famillesfournitures');

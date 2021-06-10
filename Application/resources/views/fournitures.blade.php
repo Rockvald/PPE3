@@ -70,6 +70,11 @@
                     <p>Aucun résultat trouvé pour votre recherche.</p>
                 @endif
             @else
+                @php ($alertequantite = $donneesFourniture["alerte"] ?? false)
+                @if ($alertequantite AND $alertequantite != "")
+                    <p class="erreur"><img class="img_erreur" src="{{ asset('storage/app/public/warning.png') }}" alt="Icon de confirmation" /> Attention la quantitée minimum des fournitures suivantes à été ateinte :<br />{{ $alertequantite }}</p><br />
+                @endif
+
                 @php ($valide = $valider ?? false)
                 @if ($valide)
                     <p class="confirm"><img class="img_confirm" src="{{ asset('storage/app/public/confirm.png') }}" alt="Icon de confirmation" /> La mise à jour à bien été prise en compte</p><br />
@@ -107,6 +112,7 @@
                             <th>Description</th>
                             <th>Famille</th>
                             <th>Quantitée disponible</th>
+                            <th>Quantitée minimum</th>
                         </tr>
                         <tr>
                             <td>
@@ -124,6 +130,9 @@
                             </td>
                             <td>
                                 {{ Form::number('quantite_disponible', $requete->quantite_disponible ?? '1', ['min'=>'1', 'max'=>'100']) }}
+                            </td>
+                            <td>
+                                {{ Form::number('quantite_minimum', $requete->quantite_minimum ?? '0', ['min'=>'0', 'max'=>'100']) }}
                                 {{ Form::submit('Créer l\'article') }}
                                 {!! Form::close() !!}
                             </td>
@@ -169,6 +178,8 @@
                             <th class="tabl_fourn">Quantitée disponible</th>
                         @if ($donneesPersonnel['Personnel'][0]->nomCategorie != 'Administrateur')
                             <th class="tabl_fourn">Quantitée demandée</th>
+                        @else
+                            <th class="tabl_fourn">Quantitée minimum</th>
                         @endif
                         </tr>
                     @foreach ($liste_fournitures as $lignes => $fourniture)
@@ -205,6 +216,15 @@
                             @else
                                 {{ $fourniture->quantiteDisponible }}
                             @endif
+                            </td>
+                            <td>
+                                @if ($donneesPersonnel['Personnel'][0]->nomCategorie == 'Administrateur')
+                                    {!! Form::open(['url' => 'majquantitemin']) !!}
+                                    {{ Form::hidden('id', $fourniture->id) }}
+                                    {{ Form::number('quantite_minimum', $fourniture->quantiteMinimum, ['min'=>'0', 'max'=>'100']) }}
+                                    {{ Form::submit('Mettre à jour', ['class'=>'submit']) }}
+                                    {!! Form::close() !!}
+                                @endif
                             </td>
                         @if ($donneesPersonnel['Personnel'][0]->nomCategorie != 'Administrateur')
                             <td>

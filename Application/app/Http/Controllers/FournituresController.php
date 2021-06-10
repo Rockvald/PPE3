@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Fournitures;
+use App\Models\FamillesFournitures;
 use App\Models\Personnel;
 
 class FournituresController extends Controller
@@ -58,6 +59,7 @@ class FournituresController extends Controller
             'nom_fourniture'=> 'required|max:50',
             'description_fourniture' => 'required|max:50',
             'quantite_disponible' => 'required|min:1|max:100',
+            'quantite_minimum' => 'required|min:0|max:100',
         ]);
 
         session_start();
@@ -111,6 +113,7 @@ class FournituresController extends Controller
         $Fournitures->nomPhoto = $nomPhoto;
         $Fournitures->descriptionFournitures = $request->description_fourniture;
         $Fournitures->quantiteDisponible = $request->quantite_disponible;
+        $Fournitures->quantiteMinimum = $request->quantite_minimum;
 
         $Fournitures->save();
 
@@ -129,6 +132,25 @@ class FournituresController extends Controller
         session_start();
 
         $majquantite = Fournitures::where('id', $request->id)->update(['quantiteDisponible' => $request->quantite_disponible]);
+
+        $donneesPersonnel = Personnel::donneesPersonnel();
+        $donneesFourniture = Fournitures::donneesFourniture();
+
+        $valider = true;
+
+        return view('fournitures', ['valider' => $valider, 'donneesPersonnel' => $donneesPersonnel, 'donneesFourniture' => $donneesFourniture]);
+    }
+
+    public function majquantitemin(Request $request)
+    {
+        $validatedData = $request->validate([
+            'id' => 'required',
+            'quantite_minimum' => 'required|min:0|max:100',
+        ]);
+
+        session_start();
+
+        $majquantitemin = Fournitures::where('id', $request->id)->update(['quantiteMinimum' => $request->quantite_minimum]);
 
         $donneesPersonnel = Personnel::donneesPersonnel();
         $donneesFourniture = Fournitures::donneesFourniture();

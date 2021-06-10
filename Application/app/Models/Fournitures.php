@@ -28,6 +28,14 @@ class Fournitures extends Model
             $donnesFamille["$nomFamille"] = $$nomFamille;
         }
 
-        return ['fournitures' => $Fournitures, 'famillesfournitures' => $Familles, 'donnesFamille' => $donnesFamille];
+        $alerte = "";
+
+        foreach ($Fournitures as $lignes => $fourniture) {
+            if ($fourniture->quantiteDisponible <= $fourniture->quantiteMinimum) {
+                $alerte = $alerte."- ".$fourniture->nomFournitures."\n";
+            }
+        }
+
+        return ['fournitures' => $Fournitures, 'famillesfournitures' => $Familles, 'donnesFamille' => $donnesFamille, "alerte" => $alerte];
     }
 }

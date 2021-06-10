@@ -20,6 +20,7 @@ class CreateFournituresTable extends Migration
             $table->string('nomPhoto', 255);
             $table->string('descriptionFournitures', 255);
             $table->integer('quantiteDisponible');
+            $table->integer('quantiteMinimum');
             $table->timestamps();
         });
     }
